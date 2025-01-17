@@ -2,11 +2,11 @@ from flask import Flask, render_template, jsonify
 import requests
 from bs4 import BeautifulSoup
 import sqlite3
+from flask_tailwind import Tailwind
 
-# Create news table
-
-
-def init_db():
+# Function to initialize the database by creating the 'news' table if it doesn't exist
+def setup_database():
+    # Connect to the SQLite database (or create it if it doesn't exist)
     connection = sqlite3.connect('news.db')
     cursor = connection.cursor()
 
@@ -21,10 +21,13 @@ def init_db():
 
 
 # Call the function to initialize the database
-init_db()
+setup_database()
 
 # Initialize the Flask application
 app = Flask(__name__)
+
+# Initialize Tailwind CSS
+tailwind = Tailwind(app)
 
 @app.route("/")  # Define the route for the root URL
 def index():
@@ -73,6 +76,35 @@ def scrape():
     except Exception as e:
         # Handle other types of exceptions
         return f"An error occurred: {e}"
+
+
+@app.route("/headlines")
+def get_headlines():
+    """
+    Fetches all headlines from the 'news' table in the SQLite database
+    and returns them as a JSON response.
+    """
+    try:
+        # Connect to the SQLite database
+        connection = sqlite3.connect('news.db')
+        cursor = connection.cursor()
+
+        # Execute SQL query to fetch all headlines from the 'news' table
+        cursor.execute("SELECT headline FROM news")
+        rows = cursor.fetchall()
+
+        # Prepare a list of dictionaries, each containing the id and headline
+        headlines_data = [{'headline': row[0]} for row in rows]
+
+        # Close the database connection
+        connection.close()
+
+        # Return the fetched headlines as a JSON response
+        return jsonify(headlines_data)
+
+    except Exception as e:
+        # Return an error message if an exception occurs
+        return f"Error occurred while fetching headlines: {e}"
 
 
 if __name__ == '__main__':
