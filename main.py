@@ -1,21 +1,36 @@
 from flask import Flask, render_template, jsonify
 import requests
 from bs4 import BeautifulSoup
-import firebase_admin
-from firebase_admin import credentials, firestore
+import sqlite3
+
+# Create news table
+
+
+def init_db():
+    connection = sqlite3.connect('news.db')
+    cursor = connection.cursor()
+
+    # Create the table if it doesn't exist
+    cursor.execute('''CREATE TABLE IF NOT EXISTS news (
+                        id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        headline TEXT NOT NULL,
+                        description TEXT NOT NULL)''')
+
+    connection.commit()
+    connection.close()
+
+
+# Call the function to initialize the database
+init_db()
 
 # Initialize the Flask application
 app = Flask(__name__)
-
-cred = credentials.Certificate('newsKey.json')  # Path to the new key
-firebase_admin.initialize_app(cred)
-# Initialize Firestore
-db = firestore.client()
 
 @app.route("/")  # Define the route for the root URL
 def index():
     # Render the template
     return render_template("index.html")
+
 
 @app.route("/scrape")
 def scrape():
@@ -32,16 +47,23 @@ def scrape():
         headlines_text = [headline.get_text() for headline in headlines]
 
         # Grab descriptions
-        descriptions = soup.find_all('p', attrs={'data-testid': 'card-description'})  # Or adjust the tag/class as needed
+        # Or adjust the tag/class as needed
+        descriptions = soup.find_all(
+            'p', attrs={'data-testid': 'card-description'})
         descriptions_text = [desc.get_text() for desc in descriptions]
 
-        # Add the headlines to Firestore
-        db.collection('News').add({
-            'news': {
-                'headlines': headlines_text,
-                'descriptions': descriptions_text,
-            }
-        })
+        # Insert scraped data into SQLite database
+        connection = sqlite3.connect('news.db')
+        cursor = connection.cursor()
+
+        # Insert headlines and descriptions into the news table
+        for headline, description in zip(headlines_text, descriptions_text):
+            cursor.execute("INSERT INTO news (headline, description) VALUES (?, ?)",
+                           (headline, description))
+
+        connection.commit()
+        connection.close()
+
         return jsonify({"message": "News added successfully!"}), 201
 
     except requests.exceptions.RequestException as e:
@@ -51,6 +73,7 @@ def scrape():
     except Exception as e:
         # Handle other types of exceptions
         return f"An error occurred: {e}"
+
 
 if __name__ == '__main__':
     # Run the Flask app in debug mode on port 5000
