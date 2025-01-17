@@ -1,19 +1,20 @@
 from flask import Flask, render_template, jsonify
 import requests
 from bs4 import BeautifulSoup
+import firebase_admin
+from firebase_admin import credentials, firestore
 
 # Initialize the Flask application
-# This creates an instance of the Flask class and assigns it to the variable app.
 app = Flask(__name__)
 
-# Define URLs for the websites to scrape
-guardian_url = 'https://www.theguardian.com/us'
-atlantic_url = 'https://www.theatlantic.com/'
-vox_url = 'https://www.vox.com/'
+cred = credentials.Certificate('newsKey.json')  # Path to the new key
+firebase_admin.initialize_app(cred)
+# Initialize Firestore
+db = firestore.client()
 
 @app.route("/")  # Define the route for the root URL
 def index():
-    # Render the template from the frontend folder
+    # Render the template
     return render_template("index.html")
 
 @app.route("/scrape")
@@ -26,14 +27,22 @@ def scrape():
         # Parse the HTML document
         soup = BeautifulSoup(response.content, "html.parser")
 
-        # Find all h3 tags (headlines)
-        headlines = soup.find_all('h2')
+        # Find all h2 tags (headlines)
+        headlines = soup.find_all('h2', attrs={'data-testid': 'card-headline'})
         headlines_text = [headline.get_text() for headline in headlines]
-        print(headlines_text)
 
-        # Return the headlines as a JSON response
-        return jsonify(headlines_text)
+        # Grab descriptions
+        descriptions = soup.find_all('p', attrs={'data-testid': 'card-description'})  # Or adjust the tag/class as needed
+        descriptions_text = [desc.get_text() for desc in descriptions]
 
+        # Add the headlines to Firestore
+        db.collection('News').add({
+            'news': {
+                'headlines': headlines_text,
+                'descriptions': descriptions_text,
+            }
+        })
+        return jsonify({"message": "News added successfully!"}), 201
 
     except requests.exceptions.RequestException as e:
         # Handle request-related errors
@@ -42,6 +51,7 @@ def scrape():
     except Exception as e:
         # Handle other types of exceptions
         return f"An error occurred: {e}"
+
 
 if __name__ == '__main__':
     # Run the Flask app in debug mode on port 5000
