@@ -60,7 +60,7 @@ def scrape():
         # Insert headlines and descriptions into the news table
         for headline, description in zip(headlines_text, descriptions_text):
             cursor.execute("INSERT INTO news (headline, description) VALUES (?, ?)",
-                    (headline, description))
+                (headline, description))
 
         connection.commit()
         connection.close()
