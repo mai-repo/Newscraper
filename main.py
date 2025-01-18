@@ -2,7 +2,6 @@ from flask import Flask, render_template, jsonify
 import requests
 from bs4 import BeautifulSoup
 import sqlite3
-from flask_tailwind import Tailwind
 
 # Function to initialize the database by creating the 'news' table if it doesn't exist
 def setup_database():
@@ -24,9 +23,6 @@ setup_database()
 
 # Initialize the Flask application
 app = Flask(__name__)
-
-# Initialize Tailwind CSS
-tailwind = Tailwind(app)
 
 @app.route("/")  # Define the route for the root URL
 def index():
