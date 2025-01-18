@@ -19,7 +19,6 @@ def setup_database():
     connection.commit()
     connection.close()
 
-
 # Call the function to initialize the database
 setup_database()
 
