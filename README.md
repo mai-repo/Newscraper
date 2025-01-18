@@ -14,7 +14,7 @@ This **Flask**-based application scrapes the latest news headlines and descripti
     - [4. Install Dependencies](#4-install-dependencies)
     - [5. Run the Flask Application](#5-run-the-flask-application)
     - [6. Open your web browser](#6-open-your-web-browser)
-    - [Stretch Goals](#stretch-goals)
+  - [Stretch Goals](#stretch-goals)
 
 ## Requirements
 
@@ -58,7 +58,7 @@ flask run
 
 ![A webpage with a webscraper that asks user to click a button to scrape data from the BBC and returns a JSON file with the latest headlines](https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExMTAxZDN3Y2FseXI4OTR2anp2NDZzM3h1a2ZlcWNoZGpwN3E0NmkzOCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/JTy9jAmhJyzBQHA0FG/giphy.gif)
 
-### Stretch Goals
+## Stretch Goals
 - Allow users to choose from a variety of news sites
 - A music player to let user listen to music while browsing articles
 
