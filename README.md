@@ -1,6 +1,6 @@
 # News Scraper Application
 
-This **Flask**-based application scrapes the latest news headlines and descriptions from **BBC News** and stores the data on **Firebase**.
+This **Flask**-based application scrapes the latest news headlines and descriptions from **BBC News** and stores the data before rendering it on a webpage.
 
 ## Table of Contents
 

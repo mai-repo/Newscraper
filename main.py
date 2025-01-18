@@ -75,7 +75,6 @@ def scrape():
         # Handle other types of exceptions
         return f"An error occurred: {e}"
 
-
 @app.route("/headlines")
 def get_headlines():
     """
