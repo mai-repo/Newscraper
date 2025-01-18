@@ -50,7 +50,6 @@ def scrape():
         headlines_text = [headline.get_text() for headline in headlines]
 
         # Grab descriptions
-        # Or adjust the tag/class as needed
         descriptions = soup.find_all(
             'p', attrs={'data-testid': 'card-description'})
         descriptions_text = [desc.get_text() for desc in descriptions]
@@ -62,7 +61,7 @@ def scrape():
         # Insert headlines and descriptions into the news table
         for headline, description in zip(headlines_text, descriptions_text):
             cursor.execute("INSERT INTO news (headline, description) VALUES (?, ?)",
-                           (headline, description))
+                    (headline, description))
 
         connection.commit()
         connection.close()

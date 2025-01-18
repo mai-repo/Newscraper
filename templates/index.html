@@ -4,12 +4,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="{{ url_for('static', filename='css/output.css') }}" rel="stylesheet">
     <link href="/static/css/styles.css" rel="stylesheet">
     <link rel="icon" href="/static/images/favicon.ico" type="image/x-icon">
     <title>Welcome to Mai's Website</title>
 
     <script>
-        // This function will run when the page is loaded
+        // function for to fetch the scraped news
         function fetchNews() {
             fetch('/scrape')
                 .then(response => response.json()) // Parse the JSON response

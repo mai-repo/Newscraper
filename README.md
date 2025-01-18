@@ -21,7 +21,7 @@ The following Python packages are required to run the application:
 - **Flask**: Web framework for Python.
 - **requests**: HTTP library for sending GET requests to fetch the news data.
 - **beautifulsoup4**: Library for parsing HTML and scraping data.
-- **firebase-admin**: Firebase Admin SDK to interact with Firebase Firestore.
+- 
 
 ## Setup Instructions
 
@@ -48,13 +48,8 @@ python -m venv .venv
 ```bash
 pip3 install -r requirements.txt
 ```
-### 5. Setup Firebase
 
-- Create a Firebase project at Firebase Console.
-- Download your Firebase service account key file and save it (e.g. newsKey.json).
-- Place the account file in the root directory of your project and add it to your `.gitignore`.
-
-### 6. Run the Flask Application
+### 5. Run the Flask Application
 ```bash
 export FLASK_APP=main.py
 flask run
