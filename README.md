@@ -12,8 +12,7 @@ This **Flask**-based application scrapes the latest news headlines and descripti
     - [2. Create a virtual environment](#2-create-a-virtual-environment)
     - [3. Create a .gitignore](#3-create-a-gitignore)
     - [4. Install Dependencies](#4-install-dependencies)
-    - [5. Setup Firebase](#5-setup-firebase)
-    - [6. Run the Flask Application](#6-run-the-flask-application)
+    - [5. Run the Flask Application](#5-run-the-flask-application)
 
 ## Requirements
 
@@ -21,7 +20,6 @@ The following Python packages are required to run the application:
 - **Flask**: Web framework for Python.
 - **requests**: HTTP library for sending GET requests to fetch the news data.
 - **beautifulsoup4**: Library for parsing HTML and scraping data.
-- 
 
 ## Setup Instructions
 
