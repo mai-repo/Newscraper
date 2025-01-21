@@ -1,0 +1,24 @@
+{
+  "name": "news_article",
+  "version": "1.0.0",
+  "description": "This **Flask**-based application scrapes the latest news headlines and descriptions from **BBC News** and stores the data before rendering it on a webpage.",
+  "main": "main.py",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build:css": "tailwindcss -i src/styles.css -o static/styles.css"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mai-repo/RG-Knowledge-Check-1.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mai-repo/RG-Knowledge-Check-1/issues"
+  },
+  "homepage": "https://github.com/mai-repo/RG-Knowledge-Check-1#readme",
+  "devDependencies": {
+    "tailwindcss": "^3.4.17"
+  }
+}
