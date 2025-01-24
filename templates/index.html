@@ -1,57 +1,60 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
     <title>Welcome to Mai's Website</title>
 
     <script>
-        // function for to fetch the scraped news
-        function fetchNews() {
-            fetch('/scrape')
-                .then(response => response.json()) // Parse the JSON response
-                .then(data => {
-                    alert(data.message)
-                })
-                // Error message
-                .catch(error => {
-                    console.error("Error Fetching News Data:", error);
-                });
-        }
+      // function for to fetch the scraped news
+      function fetchNews() {
+        fetch("/scrape")
+          .then((response) => response.json()) // Parse the JSON response
+          .then((data) => {
+            alert(data.message);
+          })
+          // Error message
+          .catch((error) => {
+            console.error("Error Fetching News Data:", error);
+          });
+      }
     </script>
-</head>
+  </head>
 
-<body class="flex flex-col min-h-screen bg-pink-200">
+  <body class="flex flex-col min-h-screen bg-pink-200">
     <!-- Header  -->
-    <header class="flex justify-center py-7 px-6">
-        <h1 class="text-center text-8xl font-mono text-black"> Welcome to Mai News Scraper </h1>
+    <header class="flex justify-center py-7 px-6 bg-green-300">
+      <h1 class="text-center text-8xl font-mono text-black">
+        Welcome to Mai News Scraper
+      </h1>
     </header>
     <!-- Main -->
     <main class="flex flex-grow items-center justify-center py-3 px-3">
-        <div class="text-center bg-white rounded-lg shadow-lg p-6">
-            <p class="text-center text-xl">
-                Here I will scrape all the major news articles from the BBC
-            </p>
-            <button class="mt-6 p-4  bg-indigo-300 rounded-lg" onclick="fetchNews()">
-                First, click on this button to start the scrape!
-            </button>
+      <div class="text-center bg-white rounded-lg shadow-lg p-6">
+        <p class="text-center text-xl">
+          Here I will scrape all the major news articles from the BBC
+        </p>
+        <button class="mt-6 p-4 bg-indigo-300 rounded-lg" onclick="fetchNews()">
+          First, click on this button to start the scrape!
+        </button>
 
-            <nav class="mt-6 text-center">
-                <a href="/headlines" class="text-indigo-500 hover:text-indigo-700 hover:underline text-lg">
-                    Now Access the Headlines Here
-                </a>
-            </nav>
-
-        </div>
+        <nav class="mt-6 text-center">
+          <a
+            href="/headlines"
+            class="text-indigo-500 hover:text-indigo-700 hover:underline text-lg"
+          >
+            Now Access the Headlines Here
+          </a>
+        </nav>
+      </div>
     </main>
     <!-- Footer -->
     <footer class="py-4 mt-auto">
-        <p class="text-center">
-        &copy; 2025 Mai's Website. All rights reserved.
-        </p>
+      <p class="text-center">&copy; 2025 Mai's Website. All rights reserved.</p>
     </footer>
-</body>
-
+  </body>
 </html>
