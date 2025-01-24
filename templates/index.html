@@ -1,60 +1,78 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link
-      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
-      rel="stylesheet"
-    />
-    <title>Welcome to Mai's Website</title>
 
-    <script>
-      // function for to fetch the scraped news
-      function fetchNews() {
-        fetch("/scrape")
-          .then((response) => response.json()) // Parse the JSON response
-          .then((data) => {
-            alert(data.message);
-          })
-          // Error message
-          .catch((error) => {
-            console.error("Error Fetching News Data:", error);
-          });
-      }
-    </script>
-  </head>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login</title>
+  <!-- Include Google reCAPTCHA API -->
+  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+  <!-- Include Tailwind CSS from CDN -->
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+</head>
 
-  <body class="flex flex-col min-h-screen bg-pink-200">
-    <!-- Header  -->
-    <header class="flex justify-center py-7 px-6 bg-green-300">
-      <h1 class="text-center text-8xl font-mono text-black">
-        Welcome to Mai News Scraper
-      </h1>
-    </header>
-    <!-- Main -->
-    <main class="flex flex-grow items-center justify-center py-3 px-3">
-      <div class="text-center bg-white rounded-lg shadow-lg p-6">
-        <p class="text-center text-xl">
-          Here I will scrape all the major news articles from the BBC
-        </p>
-        <button class="mt-6 p-4 bg-indigo-300 rounded-lg" onclick="fetchNews()">
-          First, click on this button to start the scrape!
-        </button>
+<script>
+  // Function to handle reCAPTCHA verification
+  function notARobot(event) {
+    // Prevent form submission to handle it with JS
+    event.preventDefault();
 
-        <nav class="mt-6 text-center">
-          <a
-            href="/headlines"
-            class="text-indigo-500 hover:text-indigo-700 hover:underline text-lg"
-          >
-            Now Access the Headlines Here
-          </a>
-        </nav>
-      </div>
-    </main>
-    <!-- Footer -->
-    <footer class="py-4 mt-auto">
-      <p class="text-center">&copy; 2025 Mai's Website. All rights reserved.</p>
-    </footer>
-  </body>
+    // Get the reCAPTCHA response token
+    const token = grecaptcha.getResponse();
+
+    if (token) {
+      // Send the token to the backend for verification
+      fetch('/verifyUser', {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          token: token // Send the reCAPTCHA token for verification
+        })
+      })
+        .then((response) => response.json()) // Parse the response as JSON
+        .then((data) => {
+          if (data.message === 'reCAPTCHA verified successfully!') {
+            // If verification is successful, alert the user and redirect
+            alert('Verification successful -- you are not a Roboto!');
+            window.location.href = '/scrape_page'; // Redirect to the main page
+          } else {
+            // If verification fails, alert the user
+            alert('Failed to verify reCAPTCHA: ' + data.message);
+          }
+        })
+        .catch((error) => {
+          // Handle any errors that occur during the fetch
+          console.error("Error:", error);
+          alert("There was an error during verification.");
+        });
+    } else {
+      // If no token is present, alert the user to complete the reCAPTCHA
+      alert("Please complete the reCAPTCHA.");
+    }
+  }
+</script>
+
+<body class="flex flex-col min-h-screen bg-pink-200">
+  <!-- Header section -->
+  <header class="flex justify-center py-7 px-6">
+    <h1 class="text-center text-6xl font-mono text-black">
+      User Authentication Required:
+      <br>
+      Click to Confirm You Are Not a Robot
+    </h1>
+  </header>
+  <!-- Main content section with login form and reCAPTCHA -->
+  <main class="flex flex-grow items-center justify-center py-3 px-3">
+    <form onsubmit="notARobot(event)">
+      <div class="g-recaptcha" data-sitekey="{{frontend_key}}"></div>
+      <button type="submit" class="p-4 bg-indigo-300 rounded-lg mt-4">Submit</button>
+    </form>
+  </main>
+  <footer class="py-4 mt-auto">
+    <p class="text-center">&copy; 2025 Mai's Website. All rights reserved.</p>
+  </footer>
+</body>
+
 </html>
