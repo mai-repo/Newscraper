@@ -4,3 +4,4 @@ requests
 flask-limiter
 redis
 python-dotenv
+google-auth

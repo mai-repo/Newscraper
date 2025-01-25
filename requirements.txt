@@ -10,6 +10,8 @@ beautifulsoup4==4.12.3
     # via -r requirements.in
 blinker==1.9.0
     # via flask
+cachetools==5.5.1
+    # via google-auth
 certifi==2024.12.14
     # via requests
 charset-normalizer==3.4.1
@@ -23,6 +25,8 @@ flask==3.1.0
     #   -r requirements.in
     #   flask-limiter
 flask-limiter==3.10.1
+    # via -r requirements.in
+google-auth==2.38.0
     # via -r requirements.in
 idna==3.10
     # via requests
@@ -44,6 +48,12 @@ ordered-set==4.1.0
     # via flask-limiter
 packaging==24.2
     # via limits
+pyasn1==0.6.1
+    # via
+    #   pyasn1-modules
+    #   rsa
+pyasn1-modules==0.4.1
+    # via google-auth
 pygments==2.19.1
     # via rich
 python-dotenv==1.0.1
@@ -54,6 +64,8 @@ requests==2.32.3
     # via -r requirements.in
 rich==13.9.4
     # via flask-limiter
+rsa==4.9
+    # via google-auth
 soupsieve==2.6
     # via beautifulsoup4
 typing-extensions==4.12.2
