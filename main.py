@@ -7,6 +7,14 @@ from bs4 import BeautifulSoup
 import sqlite3
 import os
 from dotenv import load_dotenv
+from google.auth.transport.requests import Request
+from google.oauth2 import id_token
+
+#Google key and environment variables
+GOOGLE_CLIENT_KEY= os.getenv("GOOGLE_CLIENT_KEY")
+auth_uri = "https://accounts.google.com/o/oauth2/auth"
+token_uri = "https://oauth2.googleapis.com/token"
+auth_provider_x509_cert_url = "https://www.googleapis.com/oauth2/v1/certs"
 
 # Load environment variables from .env file
 load_dotenv()
@@ -53,7 +61,7 @@ def index():
 @app.route("/scrape_page")  # Define the route for the scrape page URL
 def scrape_page():
     # Render the scrape template
-    return render_template("scrape.html", frontend_key=os.getenv("FRONTEND_KEY"))
+    return render_template("scrape.html")
 
 @app.route("/scrape")
 def scrape():
@@ -168,7 +176,6 @@ def verify_user():
                 'response': token
             }
         )
-
         result = recaptcha_response.json()
 
         if result.get('success'):
@@ -177,6 +184,20 @@ def verify_user():
             return jsonify(message='Failed to verify reCAPTCHA.'), 400
     except Exception as e:
         return jsonify(message=str(e)), 500
+
+#Function to handle User Sign-In with Google
+@app.route('/userSignIn', methods=['POST'])
+def userSignIn():
+    token = request.json.get('token')
+    if not token:
+        return jsonify(message="No token provided"), 400
+    try:
+        id_token.verify_oauth2_token(token, Request(), GOOGLE_CLIENT_KEY)
+
+        return jsonify(message='Google Sign-In successful!')
+
+    except Exception as e:
+        return jsonify(message="Invalid token", error=str(e)), 400
 
 if __name__ == '__main__':
     # Run the Flask app in debug mode on port 5000
