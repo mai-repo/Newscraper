@@ -29,7 +29,8 @@ def setup_database():
     cursor.execute('''CREATE TABLE IF NOT EXISTS news (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
                         headline TEXT NOT NULL,
-                        summary TEXT NOT NULL)''')
+                        summary TEXT NOT NULL,
+                        link TEXT NOT NULL)''')
 
     connection.commit()
     connection.close()
@@ -67,28 +68,45 @@ def scrape_page():
 def scrape():
     try:
         # Send GET request to fetch the page content
-        response = requests.get('https://www.bbc.com/news')
+        response = requests.get('https://www.theatlantic.com/most-popular/')
         response.raise_for_status()  # Ensure the request was successful
 
         # Parse the HTML document
         soup = BeautifulSoup(response.content, "html.parser")
+        articles = soup.find_all('article')
+        headlines_text = []
+        summaries_text = []
+        links_text = []
 
-        # Find all h2 tags (headlines)
-        headlines = soup.find_all('h2', attrs={'data-testid': 'card-headline'})
-        headlines_text = [headline.get_text() for headline in headlines]
 
-        # Grab summary
-        summaries = soup.find_all('p')
-        summaries_text = [summary.get_text() for summary in summaries]
+        for article in articles:
+            # Find the h2 tag (headline) within the article
+            headline = article.select_one('h2')
+            if headline:
+                headlines_text.append(headline.get_text())
+
+            # Find the p tag (summary) within the article
+            summary = article.select_one('p')
+            if summary:
+                summaries_text.append(summary.get_text())
+
+            # Find the link (<a> tag) within the article
+            link = article.select_one('a')
+            if link and link.get('href'):
+                links_text.append(link['href'])
+
+        # Ensure lists are aligned (handle missing summaries/links)
+        summaries_text += [""] * (len(headlines_text) - len(summaries_text))
+        links_text += [""] * (len(headlines_text) - len(links_text))
 
         # Insert scraped data into SQLite database
         connection = sqlite3.connect('news.db')
         cursor = connection.cursor()
 
         # Insert headlines and descriptions into the news table
-        for headline, summary in zip(headlines_text, summaries_text):
-            cursor.execute("INSERT INTO news (headline, summary) VALUES (?, ?)",
-                (headline, summary))
+        for headline, summary, link in zip(headlines_text, summaries_text, links_text):
+            cursor.execute("INSERT INTO news (headline, summary, link) VALUES (?, ?, ?)",
+                (headline, summary, link))
 
         connection.commit()
         connection.close()

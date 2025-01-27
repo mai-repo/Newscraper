@@ -33,7 +33,7 @@
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            token: token, // Send the reCAPTCHA token for verification
+          token: token, // Send the reCAPTCHA token for verification
           }),
         })
           .then((response) => response.json()) // Parse the response as JSON
@@ -87,7 +87,7 @@
     <header class="flex justify-center py-7 px-6">
       <h1 class="text-center text-6xl font-mono text-black">
         User Authentication Required:
-        <br />
+        <br/>
         Click to Confirm You Are Not a Robot
       </h1>
     </header>
