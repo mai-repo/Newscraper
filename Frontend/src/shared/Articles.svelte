@@ -1,6 +1,6 @@
 <script>
     import { onMount } from "svelte";
-    let articles = { }
+    let articles = {}
 
     async function fetchNews() {
         try {

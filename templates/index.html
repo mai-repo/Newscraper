@@ -92,7 +92,11 @@
   <!-- Main content section with login form and reCAPTCHA -->
   <main class="flex flex-grow items-center justify-center py-3 px-3">
     <form class="text-center bg-white rounded-lg shadow-lg p-6" onsubmit="notARobot(event)">
-
+      <!-- Google Identity Services onload configuration -->
+      <div id="g_id_onload" data-client_id="188533997003-j4rjj645s98u01bcqcbvpe33dcaf3ukd.apps.googleusercontent.com"
+        data-login_uri="https://accounts.google.com/o/oauth2/auth" data-callback="userSignIn"></div>
+      <!-- Google Sign-In button -->
+      <div class="g_id_signin" data-type="standard"></div>
       <!-- Google reCAPTCHA widget -->
       <div class="g-recaptcha" data-sitekey="6LeM28EqAAAAADi454gZP51XpzLYYyb7XVf21wQH"></div>
       <!-- Submit button -->

@@ -1,12 +1,12 @@
 <script>
-    let userData = {};
-    let message = null 
+    export let userData = {};
+    export let message = false;
 
     // Function for handling user sign-in with Google Identity Services
     async function userSignIn(response) {
         // response.credential contains the token provided by Google
         const token = response.credential;
-        fetch('/userSignIn', {
+        fetch('http://127.0.0.1:5000/userSignIn', {
             method: 'POST',
             headers: {
                 "Content-Type": "application/json",
@@ -18,24 +18,29 @@
             console.log(data.message);
             alert("Successfully Signed-In");
             userData = data;
-            message = true
+            message = true;
         })
         .catch(error => {
             console.log(error);
-            message = false
         });
+    onMount(() => {
+      // Attach the userSignIn function to the global window object
+        window.userSignIn = userSignIn;
+});
     }
 </script>
 
-<main>
-        <!-- Google Identity Services onload configuration -->
+<section>
+    <!-- Include Google Identity Services API (User Login) -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <!-- Google Identity Services onload configuration -->
     <div id="g_id_onload"
         data-client_id="188533997003-j4rjj645s98u01bcqcbvpe33dcaf3ukd.apps.googleusercontent.com"
-        data-login_uri="https://accounts.google.com/o/oauth2/auth"
-        data-callback="userSignIn">
+        data-callback="userSignIn"
+        data-auto_prompt="false">
     </div>
+
     <!-- Google Sign-In button -->
     <div class="g_id_signin" data-type="standard"></div>
-
-</main>
+</section>
 

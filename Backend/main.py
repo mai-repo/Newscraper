@@ -9,12 +9,11 @@ import os
 from dotenv import load_dotenv
 from google.auth.transport.requests import Request
 from google.oauth2 import id_token
+from flask_cors import CORS
 
-#Google key and environment variables
-GOOGLE_CLIENT_KEY= os.getenv("GOOGLE_CLIENT_KEY")
-auth_uri = "https://accounts.google.com/o/oauth2/auth"
-token_uri = "https://oauth2.googleapis.com/token"
-auth_provider_x509_cert_url = "https://www.googleapis.com/oauth2/v1/certs"
+
+
+
 
 # Load environment variables from .env file
 load_dotenv()
@@ -40,6 +39,9 @@ setup_database()
 
 # Initialize the Flask application
 app = Flask(__name__)
+
+#Enable CORS for all routes
+CORS(app)
 
 # Configure Flask-Limiter to use Redis
 limiter = Limiter(
@@ -202,6 +204,12 @@ def verify_user():
             return jsonify(message='Failed to verify reCAPTCHA.'), 400
     except Exception as e:
         return jsonify(message=str(e)), 500
+
+#Google key and environment variables
+GOOGLE_CLIENT_KEY= os.getenv("GOOGLE_CLIENT_KEY")
+auth_uri = "https://accounts.google.com/o/oauth2/auth"
+token_uri = "https://oauth2.googleapis.com/token"
+auth_provider_x509_cert_url = "https://www.googleapis.com/oauth2/v1/certs"
 
 #Function to handle User Sign-In with Google
 @app.route('/userSignIn', methods=['POST'])
