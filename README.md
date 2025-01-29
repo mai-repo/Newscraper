@@ -91,7 +91,8 @@ RECAPTCHA_SECRET_KEY=your-recaptcha-secret-key
 export FLASK_APP=main.py
 flask run
 ```
-### 7. Open your web browser
+### 6. Open your web browser
+
 ![A webpage with a webscraper that asks user to click a button to scrape data from the Atlantic and returns a JSON file with the latest headlines](https://i.imgflip.com/9iamed.gif)
 
 ## Stretch Goals
