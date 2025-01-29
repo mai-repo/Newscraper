@@ -1,6 +1,6 @@
 # News Scraper Application
 
-This **Flask**-based application scrapes the latest news headlines and descriptions from the **Atlantic** and stores the data before rendering it on a webpage.
+This **Flask**-based application scrapes the latest news headlines and descriptions from **the Atlantic News** and stores the data before rendering it on a webpage.
 
 ## Table of Contents
 
@@ -60,6 +60,7 @@ pip3 install -r requirements.txt
 - Follow the instructions to set up Google applications and obtain the necessary keys for authentication.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 ### Google Application Setup and .env Configuration
 
 #### 1. Create a Google Cloud Project
@@ -71,35 +72,52 @@ Edit
 
 ## 1. Create a Google Cloud Project
 >>>>>>> 8194cfc (Modify README.md and fixed adding path to the html)
+=======
+### Google Application Setup and .env Configuration
+
+#### 1. Create a Google Cloud Project
+>>>>>>> d5202b5 (rebase the README.md)
 - Go to the [Google Cloud Console](https://console.cloud.google.com/).
 - Create a new project and enable the following APIs:
   - Google Identity Services API
   - reCAPTCHA API
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #### 2. Create OAuth 2.0 Credentials
 =======
 ## 2. Create OAuth 2.0 Credentials
 >>>>>>> 8194cfc (Modify README.md and fixed adding path to the html)
+=======
+#### 2. Create OAuth 2.0 Credentials
+>>>>>>> d5202b5 (rebase the README.md)
 - Go to **Credentials** in the Google Cloud Console.
 - Create **OAuth 2.0 Client ID** for a web app.
 - Add authorized origins (e.g., `http://127.0.0.1:5000/`).
 - Download the JSON file with client secrets.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #### 3. Set Up reCAPTCHA
 =======
 ## 3. Set Up reCAPTCHA
 >>>>>>> 8194cfc (Modify README.md and fixed adding path to the html)
+=======
+#### 3. Set Up reCAPTCHA
+>>>>>>> d5202b5 (rebase the README.md)
 - Register your site in the [reCAPTCHA Admin Console](https://www.google.com/recaptcha/admin).
 - Choose reCAPTCHA type (v2).
 - Obtain **site key** and **secret key**.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #### 4. Create `.env` File
 =======
 ## 4. Create `.env` File
 >>>>>>> 8194cfc (Modify README.md and fixed adding path to the html)
+=======
+#### 4. Create `.env` File
+>>>>>>> d5202b5 (rebase the README.md)
 - Create a `.env` file in the root directory of your project.
 - Add the following variables:
 
@@ -113,7 +131,6 @@ export FLASK_APP=main.py
 flask run
 ```
 ### 7. Open your web browser
-
 ![A webpage with a webscraper that asks user to click a button to scrape data from the Atlantic and returns a JSON file with the latest headlines](https://i.imgflip.com/9iamed.gif)
 
 ## Stretch Goals
