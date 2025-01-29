@@ -1,6 +1,6 @@
 # News Scraper Application
 
-This **Flask**-based application scrapes the latest news headlines and descriptions from **BBC News** and stores the data before rendering it on a webpage.
+This **Flask**-based application scrapes the latest news headlines and descriptions from the **Atlantic** and stores the data before rendering it on a webpage.
 
 ## Table of Contents
 
@@ -56,7 +56,8 @@ flask run
 ```
 ### 6. Open your web browser
 
-![A webpage with a webscraper that asks user to click a button to scrape data from the BBC and returns a JSON file with the latest headlines](https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExMTAxZDN3Y2FseXI4OTR2anp2NDZzM3h1a2ZlcWNoZGpwN3E0NmkzOCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/JTy9jAmhJyzBQHA0FG/giphy.gif)
+![A webpage with a webscraper that asks user to click a button to scrape data from the Atlantic and returns a JSON file with the latest headlines](https://i.imgflip.com/9iamed.gif)
+
 
 ## Stretch Goals
 - Allow users to choose from a variety of news sites
