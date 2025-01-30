@@ -1,9 +1,21 @@
 <script>
     import Captacha from '../shared/Captacha.svelte';
+    import Scrape from '../shared/Scrape.svelte';
     import Users from '../shared/Users.svelte';
+    import {message} from '../shared/store.ts'
 
     let verification = false;
-    let message = false;
+
+// Function to handle reCAPTCHA verification in parent
+function handleVerification(success) {
+    if (success) {
+        verification = true;
+        console.log('Verification successful');
+        alert($message)
+    } else {
+        console.log('Verification failed');
+    }
+}
 </script>
 
 <main class="flex flex-col justify-space-evenly gap-2 p-6 bg-pink-200">
@@ -14,17 +26,11 @@
         </h1>
     </header>
     <section class="flex justify-center py-3 px-3">
-        <form class="text-center bg-white rounded-lg shadow-lg" onsubmit="{notARobot()}">
-        <Users>
-        </Users>
-        <Captacha>
-        </Captacha>
-        <button type="submit" class="p-4 bg-indigo-300 rounded-lg mt-4">
-        Submit
-        </button>
+        <form>
+        <Users/>
+        <Captacha onVerification={handleVerification} />
         </form>
     </section>
-    <!-- {#if message === true && verification === true}
-        {window.location.href = "/scrape_page"}
-    {/if} -->
-</main>
+    {#if message && verification === true}
+        <Scrape/>
+    {/if}

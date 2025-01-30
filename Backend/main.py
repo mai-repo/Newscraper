@@ -40,8 +40,8 @@ setup_database()
 # Initialize the Flask application
 app = Flask(__name__)
 
-#Enable CORS for all routes
-CORS(app)
+# Allow all origins (for local development)
+CORS(app, supports_credentials=True)
 
 # Configure Flask-Limiter to use Redis
 limiter = Limiter(
@@ -56,10 +56,10 @@ limiter = Limiter(
 def ratelimit_error(e):
     return jsonify(error="ratelimit exceeded", message="Too many requests, please try again later."), 429
 
-@app.route("/")  # Define the route for the root URL
-def index():
-    # Render the template
-    return render_template("index.html")
+# @app.route("/")  # Define the route for the root URL
+# def index():
+#     # Render the template
+#     return render_template("index.html")
 
 @app.route("/scrape_page")  # Define the route for the scrape page URL
 def scrape_page():

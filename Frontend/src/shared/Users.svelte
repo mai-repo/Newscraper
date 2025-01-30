@@ -1,6 +1,7 @@
 <script>
-    export let userData = {};
-    export let message = false;
+    import { onMount } from 'svelte'; // Import onMount for lifecycle hook
+    import {userData} from './store.ts';
+    import {message} from './store.ts';
 
     // Function for handling user sign-in with Google Identity Services
     async function userSignIn(response) {
@@ -17,17 +18,16 @@
         .then(data => {
             console.log(data.message);
             alert("Successfully Signed-In");
-            userData = data;
-            message = true;
+            userData.update(() => data);
+            message.set(true);
         })
         .catch(error => {
             console.log(error);
         });
-    onMount(() => {
-      // Attach the userSignIn function to the global window object
-        window.userSignIn = userSignIn;
-});
     }
+    onMount(() => {
+    window.userSignIn = userSignIn;
+    });
 </script>
 
 <section>
