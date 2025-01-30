@@ -34,3 +34,4 @@ function handleVerification(success) {
     {#if message && verification === true}
         <Scrape/>
     {/if}
+<main/>
