@@ -22,16 +22,16 @@ function handleVerification(success) {
     <header class="flex justify-center py-7 px-6">
         <h1 class="text-center text-6xl font-mono text-black">
             User Authentication Required:
-        <br /> Click to Confirm You Are Not a Robot
+            <br /> Click to Confirm You Are Not a Robot
         </h1>
     </header>
     <section class="flex justify-center py-3 px-3">
         <form>
-        <Users/>
-        <Captacha onVerification={handleVerification} />
+            <Users/>
+            <Captacha onVerification={handleVerification} />
         </form>
     </section>
     {#if message && verification === true}
         <Scrape/>
     {/if}
-<main/>
+</main>
