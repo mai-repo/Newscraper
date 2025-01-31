@@ -2,11 +2,14 @@
     import { onMount } from 'svelte'; // Import onMount for lifecycle hook
     import {userData} from './store.ts';
     import {message} from './store.ts';
+    import {jwtDecode} from 'jwt-decode';
 
     // Function for handling user sign-in with Google Identity Services
     async function userSignIn(response) {
         // response.credential contains the token provided by Google
         const token = response.credential;
+        const decoded = jwtDecode(token); // Decode JWT
+
         fetch('http://127.0.0.1:5000/userSignIn', {
             method: 'POST',
             headers: {
@@ -18,7 +21,7 @@
         .then(data => {
             console.log(data.message);
             alert("Successfully Signed-In");
-            userData.update(() => data);
+            userData.update(() => ({...data, name:decoded.name, email:decoded.email}));
             message.set(true);
         })
         .catch(error => {
@@ -33,6 +36,7 @@
 <section>
     <!-- Include Google Identity Services API (User Login) -->
     <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script src='https://www.googleapis.com/auth/userinfo.profile'></script>
     <!-- Google Identity Services onload configuration -->
     <div id="g_id_onload"
         data-client_id="188533997003-j4rjj645s98u01bcqcbvpe33dcaf3ukd.apps.googleusercontent.com"

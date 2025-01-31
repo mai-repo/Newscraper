@@ -10,10 +10,13 @@ from dotenv import load_dotenv
 from google.auth.transport.requests import Request
 from google.oauth2 import id_token
 from flask_cors import CORS
+from form import form_bp
 
-
-
-
+#Google key and environment variables
+GOOGLE_CLIENT_KEY= os.getenv("GOOGLE_CLIENT_KEY")
+auth_uri = "https://accounts.google.com/o/oauth2/auth"
+token_uri = "https://oauth2.googleapis.com/token"
+auth_provider_x509_cert_url = "https://www.googleapis.com/oauth2/v1/certs"
 
 # Load environment variables from .env file
 load_dotenv()
@@ -39,6 +42,10 @@ setup_database()
 
 # Initialize the Flask application
 app = Flask(__name__)
+
+# Register the Blueprint
+app.register_blueprint(form_bp)
+
 
 # Allow all origins (for local development)
 CORS(app, supports_credentials=True)
@@ -113,7 +120,15 @@ def scrape():
         connection.commit()
         connection.close()
 
-        return jsonify({"message": "News added successfully!"}), 201
+        articles_data = []
+        for headline, summary, link in zip(headlines_text, summaries_text, links_text):
+            articles_data.append({
+            "headline": headline,
+            "summary": summary,
+            "link": link
+            })
+
+        return jsonify(articles_data), 201
 
     except requests.exceptions.RequestException as e:
         # Handle request-related errors
@@ -204,12 +219,6 @@ def verify_user():
             return jsonify(message='Failed to verify reCAPTCHA.'), 400
     except Exception as e:
         return jsonify(message=str(e)), 500
-
-#Google key and environment variables
-GOOGLE_CLIENT_KEY= os.getenv("GOOGLE_CLIENT_KEY")
-auth_uri = "https://accounts.google.com/o/oauth2/auth"
-token_uri = "https://oauth2.googleapis.com/token"
-auth_provider_x509_cert_url = "https://www.googleapis.com/oauth2/v1/certs"
 
 #Function to handle User Sign-In with Google
 @app.route('/userSignIn', methods=['POST'])

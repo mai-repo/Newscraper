@@ -42,6 +42,7 @@
 		"vite": "^6.0.0"
 	},
 	"dependencies": {
+		"jwt-decode": "^4.0.0",
 		"svelte-routing": "^2.13.0"
 	}
 }
