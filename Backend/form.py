@@ -3,20 +3,18 @@ import sqlite3
 
 form_bp = Blueprint('form', __name__)
 
-
+# Function to create the favorites table if it doesn't exist
 def create_add_fav():
     with sqlite3.connect('news.db') as connection:
         cursor = connection.cursor()
-        cursor.execute
         # Create the favorites table referencing news.id
         cursor.execute('''CREATE TABLE IF NOT EXISTS favArt (
                             id INTEGER PRIMARY KEY AUTOINCREMENT,
                             username TEXT NOT NULL,
                             news_id INTEGER NOT NULL,
-                            PRIMARY KEY (id, news_id)
+                            PRIMARY KEY (id, news_id),
                             FOREIGN KEY (news_id) REFERENCES news(id) ON DELETE CASCADE)''')
         connection.commit()
-
 
 # Call the function to initialize the database
 create_add_fav()
@@ -44,18 +42,6 @@ def get_favorites_by_user(username):
         else:
             return jsonify({'message': 'No favorites found for this user'}), 404
 
-# Handle Delete request to add favorite articles
-@form_bp.route('/deleteFavorite/<int:id>', methods=['DELETE'])
-def delete_favorite(id):
-    with sqlite3.connect('news.db') as connection:
-        cursor = connection.cursor()
-        cursor.execute('DELETE FROM favArt WHERE id = ?', (id,))
-        if cursor.rowcount == 0:
-            return jsonify({'error': 'Favorite not found'}), 404
-
-        connection.commit()
-    return jsonify({'message': 'Favorite deleted successfully'}), 200
-
 # Handle POST request to add favorite articles
 @form_bp.route('/addFavorites', methods=['POST'])
 def add_favorite():
@@ -74,11 +60,13 @@ def add_favorite():
         if cursor.fetchone():
             return {'error': 'This article is already in your favorites'}, 400
 
+        # Insert the new favorite into the favArt table
         cursor.execute('INSERT INTO favArt (username, news_id) VALUES (?, ?)', (username, news_id))
         connection.commit()
 
     return {'message': 'Favorite added successfully'}, 201
 
+# Handle PUT request to edit the headline of an article
 @form_bp.route('/editHeadline', methods=['PUT'])
 def edit_headline():
     data = request.get_json()
@@ -90,6 +78,7 @@ def edit_headline():
 
     with sqlite3.connect('news.db') as connection:
         cursor = connection.cursor()
+        # Update the headline in the news table
         cursor.execute('''UPDATE news
                         SET headline = ?
                         WHERE headline = ?''', (new_headline, old_headline))
@@ -99,3 +88,16 @@ def edit_headline():
         connection.commit()
 
     return {'message': 'Headline updated successfully'}, 200
+
+# Handle DELETE request to remove a favorite article
+@form_bp.route('/deleteFavorite/<int:id>', methods=['DELETE'])
+def delete_favorite(id):
+    with sqlite3.connect('news.db') as connection:
+        cursor = connection.cursor()
+        # Delete the favorite from the favArt table
+        cursor.execute('DELETE FROM favArt WHERE id = ?', (id,))
+        if cursor.rowcount == 0:
+            return jsonify({'error': 'Favorite not found'}), 404
+
+        connection.commit()
+    return jsonify({'message': 'Favorite deleted successfully'}), 200
