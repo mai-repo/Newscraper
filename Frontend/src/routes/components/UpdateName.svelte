@@ -51,7 +51,7 @@
     {#if showForm}
         <!-- Form to input the new headline -->
         <form class="mt-2" on:submit={updateHeadline}>
-            <input type="text" class="py-2 text-sm mr-2 border border-gray-300 rounded" bind:value={newHeadline} placeholder={old_headline} />
+            <input type="text" class="py-2 text-sm mr-2 border border-gray-300 rounded" bind:value={newHeadline} placeholder={old_headline} required/>
             <button type="submit" class="bg-green-500 text-white border-none py-2 px-4 cursor-pointer rounded text-sm hover:bg-green-700">Submit</button>
         </form>
     {/if}
