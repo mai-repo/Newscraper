@@ -1,13 +1,13 @@
 <script>
     // Import the userData store from the store.ts file
     import {userData} from './store.ts'
-    
+
     // Declare a prop for the news_id
     export let news_id
-    
+
     // Declare a variable for the username
     let username
-    
+
     // Reactive statement to update the username whenever userData changes
     $: username = $userData.name
 
@@ -41,7 +41,7 @@
     }
 </script>
 
-<div>
+<div class="py-2">
     <!-- Button to trigger the addFavorite function -->
-    <button on:click={addFavorite}>Add to Favorites</button>
+    <button class="bg-blue-800 hover:bg-blue-700 text-white py-2 px-4 rounded" on:click={addFavorite}>Add to Favorites</button>
 </div>

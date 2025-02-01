@@ -28,7 +28,7 @@
     }
 </script>
 
-<div>
+<div class="pt-4">
     <!-- Button to trigger the deleteArticle function -->
-    <button on:click={() => deleteArticle(id)}>Delete Article</button>
+    <button class=" p-2 text-white  bg-red-500  hover:bg-blue-700 rounded" on:click={() => deleteArticle(id)}>Delete Article</button>
 </div>
