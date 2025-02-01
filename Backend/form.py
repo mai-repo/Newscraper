@@ -3,11 +3,11 @@ import sqlite3
 
 form_bp = Blueprint('form', __name__)
 
-# Function to create the favorites table if it doesn't exist
+# Function to create the favorite article table if it doesn't exist
 def create_add_fav():
     with sqlite3.connect('news.db') as connection:
         cursor = connection.cursor()
-        # Create the favorites table referencing news.id
+        # Create the favorite article table referencing news.id
         cursor.execute('''CREATE TABLE IF NOT EXISTS favArt (
                             id INTEGER PRIMARY KEY AUTOINCREMENT,
                             username TEXT NOT NULL,
@@ -25,19 +25,16 @@ def get_favorites_by_user(username):
     """Get all favorites for a specific user along with article details."""
     with sqlite3.connect('news.db') as connection:
         cursor = connection.cursor()
-
         # Query to get all favorite articles by joining the favArt table with the news table
         cursor.execute('''SELECT favArt.id, news.headline, news.summary, news.link
-                        FROM favArt
-                        JOIN news ON favArt.news_id = news.id
-                        WHERE favArt.username = ?''', (username,))
-
+                          FROM favArt
+                          JOIN news ON favArt.news_id = news.id
+                          WHERE favArt.username = ?''', (username,))
         articles = cursor.fetchall()
 
         if articles:
             # Prepare the response with article details
-            favorites_list = [{'id': article[0], 'headline': article[1], 'summary': article[2],
-                                'link': article[3]} for article in articles]
+            favorites_list = [{'id': article[0], 'headline': article[1], 'summary': article[2], 'link': article[3]} for article in articles]
             return jsonify({'favorites': favorites_list}), 200
         else:
             return jsonify({'message': 'No favorites found for this user'}), 404
@@ -54,7 +51,6 @@ def add_favorite():
 
     with sqlite3.connect('news.db') as connection:
         cursor = connection.cursor()
-
         # Check if the favorite already exists
         cursor.execute('SELECT * FROM favArt WHERE username = ? AND news_id = ?', (username, news_id))
         if cursor.fetchone():
@@ -80,8 +76,8 @@ def edit_headline():
         cursor = connection.cursor()
         # Update the headline in the news table
         cursor.execute('''UPDATE news
-                        SET headline = ?
-                        WHERE headline = ?''', (new_headline, old_headline))
+                          SET headline = ?
+                          WHERE headline = ?''', (new_headline, old_headline))
         if cursor.rowcount == 0:
             return {'error': 'No favorites found for the given headline'}, 404
 

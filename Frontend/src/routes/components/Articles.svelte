@@ -35,14 +35,18 @@
 <main class="flex flex-col justify-center items-center py-5 gap-3">
     <h1 class="text-4xl text-black">Articles from the Atlantic</h1>
 
-    <!-- Input field to filter headlines -->
-    <input
-        type="text"
-        placeholder="Search headlines..."
-        bind:value={searchInput}
-        on:input={filterHeadlines}
-        class="mb-4 p-2 border rounded w-1/2"
-    />
+    <!-- Input field to filter headlines with form validation -->
+    <form on:submit|preventDefault={filterHeadlines} class="w-1/2 mb-4">
+        <input
+            type="text"
+            placeholder="Search headlines..."
+            bind:value={searchInput}
+            class="p-2 border rounded w-full"
+            required
+            minlength="3"
+        />
+        <button type="submit" class="hidden">Search</button>
+    </form>
 
     <div class="flex justify-content-between align-center gap-4">
         <!-- Button to trigger scraping news articles -->

@@ -1,5 +1,5 @@
 <script>
-    import { favArticles } from "./store.ts";
+    import { favArticles } from "./store.js";
     export let headline;
     let old_headline = headline; // Store the initial headline
     let newHeadline = ''; // Variable to hold the new headline input
