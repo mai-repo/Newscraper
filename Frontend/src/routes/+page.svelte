@@ -15,7 +15,6 @@
         if (success) {
             verification = true; // Set verification to true if successful
             console.log('Verification successful');
-            alert($message); // Alert the message from the store
             if (verification && $message === true) {
                 navigate('/Scrape'); // Navigate to Scrape page if verification and message are true
             }
@@ -36,7 +35,7 @@
                 </h1>
             </header>
             <section class="flex justify-center py-3 px-3">
-                <form>
+                <form class="p-5 bg-white rounded-lg outline-1 outline-blue-500">
                     <Users/> <!-- Users component for user input -->
                     <Captacha onVerification={handleVerification} /> <!-- Captacha component with verification handler -->
                 </form>

@@ -1,8 +1,7 @@
 <script>
     import DeleteButton from './DeleteButton.svelte';
     import { userData, favArticles } from './store.ts';
-    import UpdateName from './UpdateName.svelte';
-
+    import UpdateHeadline from './UpdateHeadline.svelte';
     $: userName = $userData.name;
 
     // Function to fetch favorite articles for the user
@@ -29,7 +28,7 @@
         <div class="p-4 bg-white rounded-lg mb-2">
             <h1 class="mb-2 text-2xl text-blue-800">Headline: {favorite.headline}</h1>
             <!-- Component to update the article's title -->
-            <UpdateName headline={favorite.headline}> Change Title </UpdateName>
+            <UpdateHeadline headline={favorite.headline}> Change Title </UpdateHeadline>
             <p class="mb-2">{favorite.summary}</p>
             <a class="text-sm text-indigo-500" href="{favorite.link}" target="_blank">Read more</a>
             <!-- Component to delete the article -->

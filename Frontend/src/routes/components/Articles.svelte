@@ -34,29 +34,30 @@
 
 <main class="flex flex-col justify-center items-center py-5 gap-3">
     <h1 class="text-4xl text-black">Articles from the Atlantic</h1>
-
-    <!-- Input field to filter headlines with form validation -->
-    <form on:submit|preventDefault={filterHeadlines} class="w-1/2 mb-4">
-        <input
-            type="text"
-            placeholder="Search headlines..."
-            bind:value={searchInput}
-            class="p-2 border rounded w-full"
-            required
-            minlength="3"
-        />
-        <button type="submit" class="hidden">Search</button>
-    </form>
-
-    <div class="flex justify-content-between align-center gap-4">
+    <div class="flex justify-center align-center gap-4 w-full items-center">
         <!-- Button to trigger scraping news articles -->
-        <button on:click={scrapeNews} class="mb-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700">
+        <button on:click={scrapeNews} class="mb-2 p-2 bg-blue-500 text-white rounded hover:bg-blue-700">
             Scrape News
         </button>
         <!-- Button to trigger fetching news articles -->
-        <button on:click={fetchNews} class="mb-2 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-700">
+        <button on:click={fetchNews} class="mb-2 p-2 bg-green-500 text-white rounded hover:bg-green-700">
             Fetch News
         </button>
+
+        <!-- Input field to filter headlines with form validation -->
+        <form on:submit|preventDefault class="flex justify-center gap-4  ">
+            <input
+                type="text"
+                placeholder="Search headlines..."
+                bind:value={searchInput}
+                class="p-2 border rounded w-full"
+                required
+                minlength="3"
+            />
+            <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700 mt-2">
+                Search
+            </button>
+        </form>
     </div>
 
     {#if $news.length > 0}

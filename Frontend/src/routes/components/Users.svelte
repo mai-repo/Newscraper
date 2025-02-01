@@ -33,7 +33,7 @@
     });
 </script>
 
-<section>
+<section class= "mb-4">
     <!-- Include Google Identity Services API (User Login) -->
     <script src="https://accounts.google.com/gsi/client" async defer></script>
     <script src='https://www.googleapis.com/auth/userinfo.profile'></script>

@@ -36,5 +36,5 @@
     <!-- Include Google reCAPTCHA API -->
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     <div class="g-recaptcha" data-sitekey="6LeM28EqAAAAADi454gZP51XpzLYYyb7XVf21wQH"></div>
-    <button type="submit" on:click={notARoboto}>Submit</button>
+    <button class = "p-2 bg-blue-300 rounded-lg" type="submit" on:click={notARoboto}>Submit</button>
 </section>
