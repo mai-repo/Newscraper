@@ -13,7 +13,6 @@
             alert('Successfully grabbed the favorites');
         } catch (error) {
             console.error('Error fetching the favorite articles:', error);
-            return { error: 'Error fetching the favorite articles' }; // Return an error JSON object
         }
     }
 </script>
