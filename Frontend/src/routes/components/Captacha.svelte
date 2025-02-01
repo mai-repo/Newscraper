@@ -1,5 +1,5 @@
 <script>
-    export let onVerification; // Accept the function passed from the parent
+    export let onVerification;
 
     // Function to handle reCAPTCHA verification
     async function notARoboto(event) {
@@ -18,12 +18,11 @@
             .then(response => response.json())
             .then(data => {
                 console.log(data);
-                // Call the function passed from parent on success
-                onVerification(true);  // Notify parent of success
+                onVerification(true);
             })
             .catch(error => {
                 console.log(error);
-                onVerification(false); // Notify parent of failure
+                onVerification(false);
             });
         } else {
             alert('Please complete the reCAPTCHA.');

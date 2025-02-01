@@ -1,6 +1,6 @@
 <script>
     import { favArticles } from './store.ts'; // Import the favArticles store
-    export let id; // Declare a prop to receive the article id
+    export let id;
 
     // Function to delete an article by id
     async function deleteArticle(id) {
