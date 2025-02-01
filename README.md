@@ -3,7 +3,6 @@
 This **Flask**-based application scrapes the latest news headlines and descriptions from the **Atlantic** and stores the data before rendering it on a webpage.
 
 ## Table of Contents
-
 - [News Scraper Application](#news-scraper-application)
   - [Table of Contents](#table-of-contents)
   - [Requirements](#requirements)
@@ -18,7 +17,9 @@ This **Flask**-based application scrapes the latest news headlines and descripti
       - [2. Create OAuth 2.0 Credentials](#2-create-oauth-20-credentials)
       - [3. Set Up reCAPTCHA](#3-set-up-recaptcha)
       - [4. Create `.env` File](#4-create-env-file)
-    - [7. Open your web browser](#7-open-your-web-browser)
+    - [6. Download Frontend Dependencies](#6-download-frontend-dependencies)
+    - [7. Run the Flask Application](#7-run-the-flask-application)
+      - [8. Open your web browser](#8-open-your-web-browser)
   - [Stretch Goals](#stretch-goals)
 
 ## Requirements
@@ -29,6 +30,7 @@ The following Python packages are required to run the application:
 - **beautifulsoup4**: Library for parsing HTML and scraping data.
 - **google-auth**: Library for authenticating with Google services.
 - **google-auth-oauthlib**: Library for OAuth 2.0 authentication with Google.
+- **Svelte**: A modern JavaScript framework for building user interfaces.
 
 ## Setup Instructions
 
@@ -86,12 +88,20 @@ pip3 install -r requirements.txt
 GOOGLE_CLIENT_SECRET=your-google-client-secret
 RECAPTCHA_SECRET_KEY=your-recaptcha-secret-key
 
-### 6. Run the Flask Application
+```
+### 6. Download Frontend Dependencies
+- Navigate to the frontend directory:
+  `cd Frontend`
+- Install Dependencies:
+  `npm install `
+
+### 7. Run the Flask Application
+
 ```bash
 export FLASK_APP=main.py
 flask run
 ```
-### 7. Open your web browser
+#### 8. Open your web browser
 ![A webpage with a webscraper that asks user to click a button to scrape data from the Atlantic and returns a JSON file with the latest headlines](https://i.imgflip.com/9iamed.gif)
 
 ## Stretch Goals
