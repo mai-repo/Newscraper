@@ -27,12 +27,18 @@ def setup_database():
     connection = sqlite3.connect('news.db')
     cursor = connection.cursor()
 
-    # Create the table if it doesn't exist
-    cursor.execute('''CREATE TABLE IF NOT EXISTS news (
-                        id INTEGER PRIMARY KEY AUTOINCREMENT,
-                        headline TEXT NOT NULL,
-                        summary TEXT NOT NULL,
-                        link TEXT NOT NULL)''')
+def create_add_fav():
+    with sqlite3.connect('news.db') as connection:
+        cursor = connection.cursor()
+        cursor.execute
+        # Create the favorites table referencing news.id
+        cursor.execute('''CREATE TABLE IF NOT EXISTS favArt (
+                            id INTEGER PRIMARY KEY AUTOINCREMENT,
+                            username TEXT NOT NULL,
+                            news_id INTEGER NOT NULL,
+                            FOREIGN KEY (news_id) REFERENCES news(id) ON DELETE CASCADE)''')
+        connection.commit()
+
 
     connection.commit()
     connection.close()
@@ -43,30 +49,29 @@ setup_database()
 # Initialize the Flask application
 app = Flask(__name__)
 
-# Register the Blueprint
-app.register_blueprint(form_bp)
-
-
 # Allow all origins (for local development)
 CORS(app, supports_credentials=True)
 
-# Configure Flask-Limiter to use Redis
-limiter = Limiter(
-    get_remote_address,
-    app=app,
-    storage_uri="redis://127.0.0.1:6379",  # Use Redis as the storage backend
-    default_limits=["5 per 3 minutes"],
-)
+# Register the Blueprint
+app.register_blueprint(form_bp)
 
-# Define a custom error handler for rate limit errors (HTTP 429)
-@app.errorhandler(429)
-def ratelimit_error(e):
-    return jsonify(error="ratelimit exceeded", message="Too many requests, please try again later."), 429
+# # Configure Flask-Limiter to use Redis
+# limiter = Limiter(
+#     get_remote_address,
+#     app=app,
+#     storage_uri="redis://127.0.0.1:6379",  # Use Redis as the storage backend
+#     default_limits=["5 per 3 minutes"],
+# )
 
-# @app.route("/")  # Define the route for the root URL
-# def index():
-#     # Render the template
-#     return render_template("index.html")
+# # Define a custom error handler for rate limit errors (HTTP 429)
+# @app.errorhandler(429)
+# def ratelimit_error(e):
+#     return jsonify(error="ratelimit exceeded", message="Too many requests, please try again later."), 429
+
+@app.route("/")  # Define the route for the root URL
+def index():
+    # Return a simple JSON response
+    return jsonify(message="Welcome to the API!")
 
 @app.route("/scrape_page")  # Define the route for the scrape page URL
 def scrape_page():
@@ -138,6 +143,26 @@ def scrape():
         # Handle other types of exceptions
         return f"An error occurred: {e}"
 
+
+@app.route('/news', methods=['GET'])
+def get_news():
+    # Connect to the SQLite database
+    connection = sqlite3.connect('news.db')
+    cursor = connection.cursor()
+
+    # Select all rows from the 'news' table
+    cursor.execute("SELECT * FROM news")
+    articles = cursor.fetchall()  # Fetch all the data
+
+    # Close the connection to the database
+    connection.close()
+
+    # Format the data into a list of dictionaries for JSON response
+    articles_data = [{"id": article[0], "headline": article[1], "summary": article[2], "link": article[3]} for article in articles]
+
+    # Return the articles as a JSON response
+    return jsonify(articles_data)
+
 @app.route("/headlines")
 def get_headlines():
     """
@@ -196,7 +221,7 @@ def get_summaries():
         return f"Error occurred while fetching summaries: {e}"
 
 @app.route('/verifyUser', methods=['POST'])
-@limiter.limit("5 per 5 mins")
+# @limiter.limit("5 per 5 mins")
 def verify_user():
     try:
         data = request.get_json()  # Correctly get JSON data from the request
