@@ -23,6 +23,7 @@
             console.log('Error fetching news:', error);
         }
     }
+
 </script>
 
 <main class="flex flex-col justify-center items-center py-5 gap-3">
@@ -33,6 +34,7 @@
     <button on:click={fetchNews}> Fetch News </button>
     {#if $news.length > 0}
         {#each $news as article (article.id)}
+        <input type="text" placeholder="Search articles..." bind:value={searchInput} class="mb-4 p-2 border rounded" />
             <div class="p-4 bg-white w-1/2 rounded-lg">
                 <h1 class="mb-2 text-2xl text-blue-800">Headline: {article.headline}</h1>
                 <p class="mb-2">{article.summary}</p>
