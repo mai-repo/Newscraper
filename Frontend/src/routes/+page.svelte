@@ -35,7 +35,7 @@
                 </h1>
             </header>
             <section class="flex justify-center py-3 px-3">
-                <form class="p-5 bg-white rounded-lg outline-1 outline-blue-500">
+                <form class="p-5 bg-white rounded-lg">
                     <Users/> <!-- Users component for user input -->
                     <Captacha onVerification={handleVerification} /> <!-- Captacha component with verification handler -->
                 </form>
