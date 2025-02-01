@@ -1,8 +1,9 @@
 <script>
     import DeleteButton from './DeleteButton.svelte';
     import { userData, favArticles } from './store.ts';
+    import UpdateName from './UpdateName.svelte';
     let userName;
-    $: userName = $userData.name;
+    $: userName = encodeURIComponent($userData.name);
 
     async function getFav() {
         try {
@@ -21,11 +22,13 @@
     {#if $favArticles.length > 0}
     <!-- content here -->
     {#each $favArticles as favorite}
-        <div class="p-4 bg-white w-1/2 rounded-lg mb-2">
+        <div class="p-4 bg-white rounded-lg mb-2">
             <h1 class="mb-2 text-2xl text-blue-800">Headline: {favorite.headline}</h1>
+            <UpdateName headline={favorite.headline}> Change Title </UpdateName>
             <p class="mb-2">{favorite.summary}</p>
             <a class="text-sm text-indigo-500" href="{favorite.link}" target="_blank">Read more</a>
             <DeleteButton id={favorite.id}> Delete Article </DeleteButton>
+
         </div>
     {/each}
     {/if}
