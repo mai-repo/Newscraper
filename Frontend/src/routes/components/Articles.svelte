@@ -59,16 +59,16 @@
             </button>
         </form>
     </div>
-
-    {#if $news.length > 0}
-        {#each filterHeadlines() as article (article.id)}
-            <div class="p-4 bg-white w-1/2 rounded-lg shadow-md mb-4">
-                <h1 class="mb-2 text-2xl text-blue-800">Headline: {article.headline}</h1>
-                <p class="mb-2">{article.summary}</p>
-                <a class="text-sm text-indigo-500" href="{article.link}" target="_blank">Read more</a>
-                <!-- Component to add article to favorites -->
-                <AddFavorite news_id={article.id}></AddFavorite>
-            </div>
-        {/each}
-    {/if}
+<!-- Display filtered articles with headline, summary, link, and option to add to favorites -->
+{#if $news.length > 0}
+    {#each filterHeadlines() as article (article.id)}
+        <div class="p-4 bg-white w-1/2 rounded-lg shadow-md mb-4">
+            <h1 class="mb-2 text-2xl text-blue-800">Headline: {article.headline}</h1>
+            <p class="mb-2">{article.summary}</p>
+            <a class="text-sm text-indigo-500" href="{article.link}" target="_blank">Read more</a>
+            <!-- Component to add article to favorites -->
+            <AddFavorite news_id={article.id}></AddFavorite>
+        </div>
+    {/each}
+{/if}
 </main>
