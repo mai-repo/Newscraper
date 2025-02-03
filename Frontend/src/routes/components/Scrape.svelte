@@ -2,7 +2,7 @@
     // Importing the Articles component
     import Articles from "./Articles.svelte";
     // Importing the Form component
-    import Form from "./Favorite.svelte";
+    import Favorite from "./Favorite.svelte";
     // Importing the userData store
     import { userData } from "./store.ts";
 </script>
@@ -17,7 +17,7 @@
             <!-- Displaying the user's name from the userData store -->
             <p class="p-5 text-4xl text-center">Hello, {$userData.name}</p>
             <!-- Including the Form component -->
-            <Form />
+            <Favorite />
         </nav-bar>
     </header>
     <!-- Including the Articles component -->

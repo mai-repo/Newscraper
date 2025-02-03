@@ -117,9 +117,6 @@ def scrape():
         connection = sqlite3.connect('news.db')
         cursor = connection.cursor()
 
-        # Remove existing data
-        cursor.execute('''TRUNCATE TABLE NEWS''')
-
         # Insert headlines and descriptions into the news table
         for headline, summary, link in zip(headlines_text, summaries_text, links_text):
             cursor.execute("INSERT INTO news (headline, summary, link) VALUES (?, ?, ?)",

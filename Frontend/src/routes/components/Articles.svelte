@@ -34,13 +34,13 @@
 
 <main class="flex flex-col justify-center items-center py-5 gap-3">
     <h1 class="text-4xl text-black">Articles from the Atlantic</h1>
-    <div class="flex justify-center align-center gap-4 w-full items-center">
+    <div class="flex justify-center items-center gap-4">
         <!-- Button to trigger scraping news articles -->
-        <button on:click={scrapeNews} class="mb-2 p-2 bg-blue-500 text-white rounded hover:bg-blue-700">
+        <button on:click={scrapeNews} class="p-2 bg-blue-500 text-white rounded hover:bg-blue-700">
             Scrape News
         </button>
         <!-- Button to trigger fetching news articles -->
-        <button on:click={fetchNews} class="mb-2 p-2 bg-green-500 text-white rounded hover:bg-green-700">
+        <button on:click={fetchNews} class="p-2 bg-green-500 text-white rounded hover:bg-green-700">
             Fetch News
         </button>
 
@@ -50,11 +50,11 @@
                 type="text"
                 placeholder="Search headlines..."
                 bind:value={searchInput}
-                class="p-2 border rounded w-full"
+                class="px-4 p-2 border rounded w-full"
                 required
                 minlength="3"
             />
-            <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700 mt-2">
+            <button type="submit" class="p-2 bg-blue-600 text-white rounded hover:bg-blue-700">
                 Search
             </button>
         </form>
