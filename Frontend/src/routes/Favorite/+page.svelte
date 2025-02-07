@@ -1,7 +1,8 @@
 <script>
-    import DeleteButton from './DeleteButton.svelte';
-    import { userData, favArticles } from './store.ts';
-    import UpdateHeadline from './UpdateHeadline.svelte';
+    import DeleteButton from '../components/DeleteButton.svelte';
+    import FavPokemon from '../components/FavPokemon.svelte';
+    import { userData, favArticles } from '../components/store.ts';
+    import UpdateHeadline from '../components/UpdateHeadline.svelte';
     $: userName = $userData.name;
 
     // Function to fetch favorite articles for the user
@@ -20,6 +21,7 @@
 <div class="p-4">
     <!-- Button to trigger fetching of favorite articles -->
     <button class="px-4 py-2 mb-4 bg-blue-700 text-white rounded hover:bg-blue-700" on:click={getFav}> See All Your Favorite Articles </button>
+    <FavPokemon/>
 
     {#if $favArticles.length > 0}
     <!-- Loop through each favorite article and display its details -->

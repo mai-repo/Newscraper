@@ -21,7 +21,7 @@
         .then(data => {
             console.log(data.message);
             alert("Successfully Signed-In");
-            userData.update(() => ({...data, name:decoded.name, email:decoded.email}));
+            userData.set({name: decoded.name});
             message.set(true);
         })
         .catch(error => {

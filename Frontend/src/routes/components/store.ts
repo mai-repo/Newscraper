@@ -1,11 +1,27 @@
 import { writable } from "svelte/store";
 
 
-export const userData = writable({});
+let storedUserData = null;
+if (typeof window !== "undefined") {
+    storedUserData = sessionStorage.getItem("userData");
+}
+
+export const userData = writable(storedUserData ? JSON.parse(storedUserData) : { name: '' });
+
+if (typeof window !== "undefined") {
+    userData.subscribe(value => {
+        if (value) {
+            sessionStorage.setItem("userData", JSON.stringify(value));
+        }
+    });
+}
+
 export const message = writable(false);
 export const articlesData = writable([]);
 export const favArticles = writable([]);
 export const news = writable([]);
+export const pokemonData = writable([]);
+export const profilePhoto = writable([]);
 
 /*
 Further information on stores in svelte from the official documentation:
