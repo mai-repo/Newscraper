@@ -60,20 +60,20 @@
     }
 </script>
 
-<button on:click={pokemonData}>Get Favorite Pokemon</button>
+<button class= "x-4 p-2 mb-4 bg-green-700 text-white rounded hover:bg-blue-700" on:click={pokemonData}>Get Favorite Pokemon</button>
 
 {#if pokemon}
-    <div>
+    <div class="justify-center mb-8">
         {#each pokemon as p (p.id)}
-            <p>{p.pokemonName}</p>
+            <h2 style="color: blue; font-size: 24px; margin-bottom: 10px;">{p.pokemonName}</h2>
             <div>
                 <img src={p.image} alt={p.Name} />
                 <form on:submit|preventDefault={() => updatePhoto(p.id, image)}>
                     <input type="text" bind:value={image} placeholder="Enter new image URL" />
-                    <button type="submit">Change Profile Image</button>
+                    <button class=" x-4 p-2 mb-4 bg-green-700 text-white rounded hover:bg-blue-700 submit">Change Profile Image</button>
                 </form>
             </div>
-            <button on:click={() => deletePokemon(p.id)}>Delete Pokemon</button>
+            <button class="x-4 p-2 mb-4 bg-pink-700 text-white rounded hover:bg-blue-700"  on:click={() => deletePokemon(p.id)}>Delete Pokemon</button>
         {/each}
     </div>
 {/if}
