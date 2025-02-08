@@ -18,9 +18,9 @@ This **Flask**-based application scrapes the latest news headlines and descripti
       - [3. Set Up reCAPTCHA](#3-set-up-recaptcha)
       - [4. Create `.env` File](#4-create-env-file)
     - [6. Data Schema](#6-data-schema)
-  - [News Data Schema](#news-data-schema)
-  - [Pokémon Data Schema](#pokémon-data-schema)
-  - [Favorite Articles Data Schema](#favorite-articles-data-schema)
+      - [News Data Schema](#news-data-schema)
+      - [Pokémon Data Schema](#pokémon-data-schema)
+      - [Favorite Articles Data Schema](#favorite-articles-data-schema)
     - [7. Download Frontend Dependencies](#7-download-frontend-dependencies)
     - [8. Run the Flask Application](#8-run-the-flask-application)
       - [89. Open your web browser](#89-open-your-web-browser)
@@ -95,7 +95,7 @@ RECAPTCHA_SECRET_KEY=your-recaptcha-secret-key
 ```
 
 ### 6. Data Schema
-## News Data Schema
+##### News Data Schema
   - The news data is stored in an SQLite database with the following schema:
 ```sql
 CREATE TABLE IF NOT EXISTS news (
@@ -106,7 +106,7 @@ CREATE TABLE IF NOT EXISTS news (
 );
 ```
 
-## Pokémon Data Schema
+##### Pokémon Data Schema
 - The Pokémon data is stored in an SQLite database with the following schema:
 ```sql
 CREATE TABLE IF NOT EXISTS pokemon (
@@ -117,7 +117,7 @@ CREATE TABLE IF NOT EXISTS pokemon (
 );
 ```
 
-## Favorite Articles Data Schema
+##### Favorite Articles Data Schema
 - The favorite articles data is stored in an SQLite database with the following schema:
 ```sql
   CREATE TABLE IF NOT EXISTS favArt (
@@ -141,7 +141,7 @@ CREATE TABLE IF NOT EXISTS pokemon (
 export FLASK_APP=main.py
 flask run
 ```
-#### 89. Open your web browser
+### 8. Open your web browser
 ![A webpage with a webscraper that asks user to click a button to scrape data from the Atlantic and returns a JSON file with the latest headlines](https://i.imgflip.com/9iamed.gif)
 
 ## Stretch Goals
