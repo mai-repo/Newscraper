@@ -52,13 +52,13 @@ CORS(app, supports_credentials=True)
 app.register_blueprint(form_bp)
 app.register_blueprint(pokemon)
 
-# # Configure Flask-Limiter to use Redis
-# limiter = Limiter(
-#     get_remote_address,
-#     app=app,
-#     storage_uri="redis://127.0.0.1:6379",  # Use Redis as the storage backend
-#     default_limits=["5 per 3 minutes"],
-# )
+# Configure Flask-Limiter to use Redis
+limiter = Limiter(
+    get_remote_address,
+    app=app,
+    storage_uri="redis://127.0.0.1:6379",  # Use Redis as the storage backend
+    default_limits=["5 per 3 minutes"],
+)
 
 # Define a custom error handler for rate limit errors (HTTP 429)
 @app.errorhandler(429)
@@ -218,7 +218,7 @@ def get_summaries():
         return f"Error occurred while fetching summaries: {e}"
 
 @app.route('/verifyUser', methods=['POST'])
-# @limiter.limit("5 per 5 mins")
+@limiter.limit("5 per 5 mins")
 def verify_user():
     try:
         data = request.get_json()  # Correctly get JSON data from the request

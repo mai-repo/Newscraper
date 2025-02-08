@@ -1,6 +1,6 @@
 # News Scraper Application
 
-This **Flask**-based application scrapes the latest news headlines and descriptions from the **Atlantic** and stores the data before rendering it on a webpage.
+This **Flask**-based application scrapes the latest news headlines and descriptions from the **Atlantic** and stores the data before rendering it on a webpage. Additionally, it integrates with the Pokémon API to fetch and manage Pokémon data.
 
 ## Table of Contents
 - [News Scraper Application](#news-scraper-application)
@@ -17,9 +17,13 @@ This **Flask**-based application scrapes the latest news headlines and descripti
       - [2. Create OAuth 2.0 Credentials](#2-create-oauth-20-credentials)
       - [3. Set Up reCAPTCHA](#3-set-up-recaptcha)
       - [4. Create `.env` File](#4-create-env-file)
-    - [6. Download Frontend Dependencies](#6-download-frontend-dependencies)
-    - [7. Run the Flask Application](#7-run-the-flask-application)
-      - [8. Open your web browser](#8-open-your-web-browser)
+    - [6. Data Schema](#6-data-schema)
+  - [News Data Schema](#news-data-schema)
+  - [Pokémon Data Schema](#pokémon-data-schema)
+  - [Favorite Articles Data Schema](#favorite-articles-data-schema)
+    - [7. Download Frontend Dependencies](#7-download-frontend-dependencies)
+    - [8. Run the Flask Application](#8-run-the-flask-application)
+      - [89. Open your web browser](#89-open-your-web-browser)
   - [Stretch Goals](#stretch-goals)
 
 ## Requirements
@@ -89,23 +93,57 @@ GOOGLE_CLIENT_SECRET=your-google-client-secret
 RECAPTCHA_SECRET_KEY=your-recaptcha-secret-key
 
 ```
-### 6. Download Frontend Dependencies
+
+### 6. Data Schema
+## News Data Schema
+  - The news data is stored in an SQLite database with the following schema:
+```sql
+CREATE TABLE IF NOT EXISTS news (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    headline TEXT NOT NULL,
+    summary TEXT NOT NULL,
+    link TEXT NOT NULL
+);
+```
+
+## Pokémon Data Schema
+- The Pokémon data is stored in an SQLite database with the following schema:
+```sql
+CREATE TABLE IF NOT EXISTS pokemon (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    username TEXT NOT NULL,
+    pokemonName TEXT NOT NULL,
+    image TEXT NOT NULL
+);
+```
+
+## Favorite Articles Data Schema
+- The favorite articles data is stored in an SQLite database with the following schema:
+```sql
+CREATE TABLE IF NOT EXISTS favorite_articles (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    article_id INTEGER NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (article_id) REFERENCES news(id)
+);
+```
+
+### 7. Download Frontend Dependencies
 - Navigate to the frontend directory:
   `cd Frontend`
 - Install Dependencies:
   `npm install `
 
-### 7. Run the Flask Application
+### 8. Run the Flask Application
 
 ```bash
 export FLASK_APP=main.py
 flask run
 ```
-#### 8. Open your web browser
+#### 89. Open your web browser
 ![A webpage with a webscraper that asks user to click a button to scrape data from the Atlantic and returns a JSON file with the latest headlines](https://i.imgflip.com/9iamed.gif)
 
 ## Stretch Goals
 - Allow users to choose from a variety of news sites
 - A music player to let user listen to music while browsing articles
-
-

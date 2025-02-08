@@ -21,6 +21,7 @@ create_add_Pokemon()
 
 base_url = "https://pokeapi.co/api/v2"
 
+# Route to get Pokemon details from the API
 @pokemon.route('/catchEm', methods=["GET"])
 def get_Pokemon():
     name = request.args.get('name')
@@ -43,6 +44,7 @@ def get_Pokemon():
     else:
         return jsonify({"error": "Pokemon not found"}), 404
 
+# Route to save a Pokemon to the database
 @pokemon.route('/savePokemon', methods=["POST"])
 def save_Pokemon():
     data = request.get_json()
@@ -61,6 +63,7 @@ def save_Pokemon():
 
     return jsonify({"message": "Pokemon saved successfully"}), 201
 
+# Route to update a Pokemon in the database
 @pokemon.route('/updatePokemon/<int:id>', methods=["PUT"])
 def update_Pokemon(id):
     data = request.get_json()
@@ -80,6 +83,7 @@ def update_Pokemon(id):
 
     return jsonify({"message": "Pokemon updated successfully"}), 200
 
+# Route to delete a Pokemon from the database
 @pokemon.route('/deletePokemon/<int:id>', methods=["DELETE"])
 def delete_Pokemon(id):
     with sqlite3.connect('news.db') as connection:
@@ -89,6 +93,7 @@ def delete_Pokemon(id):
 
     return jsonify({"message": "Pokemon deleted successfully"}), 200
 
+# Route to get all Pokemon from the database
 @pokemon.route('/getPokemon', methods=["GET"])
 def get_all_Pokemon():
     with sqlite3.connect('news.db') as connection:
@@ -107,6 +112,7 @@ def get_all_Pokemon():
 
     return jsonify(pokemons), 200
 
+# Route to change the profile photo of a Pokemon
 @pokemon.route('/changeProfile', methods=["PUT"])
 def profile_photo():
     data = request.get_json()

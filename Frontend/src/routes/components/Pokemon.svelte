@@ -34,6 +34,7 @@
         }
 
         try {
+            // Make the POST request to save the Pokémon data
             const response = await fetch(`http://127.0.0.1:5000/savePokemon`, {
                 method: "POST",
                 headers: {
@@ -46,6 +47,7 @@
                 }),
             });
 
+            // Check if the response is not OK (status code is not in the range 200-299)
             if (!response.ok) {
                 const errorData = await response.json();
                 console.log("Error saving Pokémon:", errorData);
@@ -60,20 +62,24 @@
             } else {
                 console.log("Unexpected response structure:", data);
             }
-        } catch (error) {
+        // Log any errors that occur during the save process
+    } catch (error) {
             console.log("Error saving and catching the Pokémon:", error);
         }
     }
 </script>
 
 <main>
+    <!-- Form to input Pokémon name and fetch data -->
     <form class="justify-space-evenly items-center" on:submit|preventDefault={() => fetchPokemon(pokemonName)}>
+        <!-- Input field for Pokémon name -->
         <input
             bind:value={pokemonName}
             placeholder="Enter Pokémon name"
             class="mt-4 px-4 py-2 text-black rounded mr-4"
             required
         />
+        <!-- Button to submit the form and fetch Pokémon data -->
         <button class="mt-4 p-2 bg-blue-500 text-white rounded" type="submit">Catch Pokémon!</button>
     </form>
 
