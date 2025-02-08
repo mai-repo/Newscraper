@@ -23,7 +23,7 @@ This **Flask**-based application scrapes the latest news headlines and descripti
       - [Favorite Articles Data Schema](#favorite-articles-data-schema)
     - [7. Download Frontend Dependencies](#7-download-frontend-dependencies)
     - [8. Run the Flask Application](#8-run-the-flask-application)
-      - [89. Open your web browser](#89-open-your-web-browser)
+    - [9. Open your web browser](#89-open-your-web-browser)
   - [Stretch Goals](#stretch-goals)
 
 ## Requirements
@@ -141,7 +141,7 @@ CREATE TABLE IF NOT EXISTS pokemon (
 export FLASK_APP=main.py
 flask run
 ```
-### 8. Open your web browser
+### 9. Open your web browser
 ![A webpage with a webscraper that asks user to click a button to scrape data from the Atlantic and returns a JSON file with the latest headlines](https://i.imgflip.com/9iamed.gif)
 
 ## Stretch Goals
