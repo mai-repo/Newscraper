@@ -120,12 +120,12 @@ CREATE TABLE IF NOT EXISTS pokemon (
 ## Favorite Articles Data Schema
 - The favorite articles data is stored in an SQLite database with the following schema:
 ```sql
-CREATE TABLE IF NOT EXISTS favorite_articles (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    user_id INTEGER NOT NULL,
-    article_id INTEGER NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES users(id),
-    FOREIGN KEY (article_id) REFERENCES news(id)
+  CREATE TABLE IF NOT EXISTS favArt (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      username TEXT NOT NULL,
+      news_id INTEGER NOT NULL,
+      PRIMARY KEY (id, news_id),
+      FOREIGN KEY (news_id) REFERENCES news(id) ON DELETE CASCADE)
 );
 ```
 
