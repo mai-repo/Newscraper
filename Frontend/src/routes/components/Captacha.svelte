@@ -22,7 +22,6 @@
             })
             .catch(error => {
                 console.log(error);
-                onVerification(false);
             });
         } else {
             alert('Please complete the reCAPTCHA.');

@@ -16,7 +16,7 @@ load_dotenv()
 
 # Google key and environment variables
 GOOGLE_CLIENT_KEY = os.getenv("GOOGLE_CLIENT_KEY")
-RECAPTCHA_SECRET_KEY = os.getenv("RECAPTCHA_SECRET_KEY")
+RECAPTCHA_SECRET_KEY = os.getenv("BACKEND_KEY")
 auth_uri = "https://accounts.google.com/o/oauth2/auth"
 token_uri = "https://oauth2.googleapis.com/token"
 auth_provider_x509_cert_url = "https://www.googleapis.com/oauth2/v1/certs"
@@ -204,7 +204,7 @@ def verify_user():
     try:
         data = request.get_json()  # Correctly get JSON data from the request
         token = data.get('token')
-        secret = os.getenv("RECAPTCHA_SECRET_KEY")
+        secret = RECAPTCHA_SECRET_KEY
 
         # Send the POST request to Google's reCAPTCHA verification endpoint
         recaptcha_response = requests.post(
