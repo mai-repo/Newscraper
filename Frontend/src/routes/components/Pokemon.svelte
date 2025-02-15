@@ -59,6 +59,8 @@
             if (data.message) {
                 pokemonData.set(data);
                 console.log(data.message);
+                alert("successfully added Pokemon")
+
             } else {
                 console.log("Unexpected response structure:", data);
             }
@@ -70,7 +72,8 @@
 </script>
 
 <main>
-    <!-- Form to input Pokémon name and fetch data -->
+    <div class="flex justify-center gap-2">
+            <!-- Form to input Pokémon name and fetch data -->
     <form class="justify-space-evenly items-center" on:submit|preventDefault={() => fetchPokemon(pokemonName)}>
         <!-- Input field for Pokémon name -->
         <input
@@ -85,10 +88,7 @@
 
     <!-- Display the fetched Pokémon data -->
     {#if pokemon}
-        <div class="pokemon-info mt-4 p-4 border rounded shadow-lg bg-blue-500">
-            <h2 class="text-2xl font-bold mb-2">{pokemon.name}</h2>
-            <img class="w-32 h-32 object-contain bg-mb-4" src={pokemon.image} alt={pokemon.name} />
-            <button class="p-2 bg-green-500 text-white rounded" on:click={addPokemon}>Add to Favorites</button>
-        </div>
+            <button class=" mt-4 p-2 p-2 bg-green-500 text-white rounded" on:click={addPokemon}>Add to Favorites</button>
     {/if}
+    </div>
 </main>

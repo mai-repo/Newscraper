@@ -20,7 +20,7 @@
         .then(res => res.json())
         .then(data => {
             console.log(data.message);
-            alert("Successfully Signed-In");
+            alert(JSON.stringify(data.message));
             userData.set({name: decoded.name});
             message.set(true);
         })

@@ -1,8 +1,5 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, send_from_directory
 import requests
-# from flask_limiter import Limiter
-# from flask_limiter.util import get_remote_address
-from redis import Redis
 from bs4 import BeautifulSoup
 import sqlite3
 import os
@@ -12,15 +9,21 @@ from google.oauth2 import id_token
 from flask_cors import CORS
 from form import form_bp
 from pokemon import pokemon
+import logging
 
-#Google key and environment variables
-GOOGLE_CLIENT_KEY= os.getenv("GOOGLE_CLIENT_KEY")
+# Load environment variables from .env file
+load_dotenv()
+
+# Google key and environment variables
+GOOGLE_CLIENT_KEY = os.getenv("GOOGLE_CLIENT_KEY")
+RECAPTCHA_SECRET_KEY = os.getenv("RECAPTCHA_SECRET_KEY")
 auth_uri = "https://accounts.google.com/o/oauth2/auth"
 token_uri = "https://oauth2.googleapis.com/token"
 auth_provider_x509_cert_url = "https://www.googleapis.com/oauth2/v1/certs"
 
-# Load environment variables from .env file
-load_dotenv()
+# Configure logging
+logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 # Function to initialize the database by creating the 'news' table if it doesn't exist
 def setup_database():
@@ -41,9 +44,8 @@ def setup_database():
 # Call the function to initialize the database
 setup_database()
 
-
 # Initialize the Flask application
-app = Flask(__name__)
+app = Flask(__name__, template_folder='/Users/thanhmai/Newscraper/Backend/templates')
 
 # Allow all origins (for local development)
 CORS(app, supports_credentials=True)
@@ -52,28 +54,10 @@ CORS(app, supports_credentials=True)
 app.register_blueprint(form_bp)
 app.register_blueprint(pokemon)
 
-# Configure Flask-Limiter to use Redis
-limiter = Limiter(
-    get_remote_address,
-    app=app,
-    storage_uri="redis://127.0.0.1:6379",  # Use Redis as the storage backend
-    default_limits=["5 per 3 minutes"],
-)
-
-# Define a custom error handler for rate limit errors (HTTP 429)
-@app.errorhandler(429)
-def ratelimit_error(e):
-    return jsonify(error="ratelimit exceeded", message="Too many requests, please try again later."), 429
-
 @app.route("/")  # Define the route for the root URL
 def index():
-    # Return a simple JSON response
-    return jsonify(message="Welcome to the API!")
+    return jsonify({'message': 'Welcome to the API!'})
 
-@app.route("/scrape_page")  # Define the route for the scrape page URL
-def scrape_page():
-    # Render the scrape template
-    return render_template("scrape.html")
 
 @app.route("/scrape")
 def scrape():
@@ -88,7 +72,6 @@ def scrape():
         headlines_text = []
         summaries_text = []
         links_text = []
-
 
         for article in articles:
             # Find the h2 tag (headline) within the article
@@ -132,33 +115,33 @@ def scrape():
 
         return jsonify(articles_data), 201
 
-    except requests.exceptions.RequestException as e:
-        # Handle request-related errors
-        return f"Error fetching the page: {e}"
-
     except Exception as e:
-        # Handle other types of exceptions
-        return f"An error occurred: {e}"
-
+        logging.error(f"Error occurred during scraping: {e}")
+        return render_template("error.html", error_message=f"An error occurred: {e}"), 500
 
 @app.route('/news', methods=['GET'])
 def get_news():
-    # Connect to the SQLite database
-    connection = sqlite3.connect('news.db')
-    cursor = connection.cursor()
+    try:
+        # Connect to the SQLite database
+        connection = sqlite3.connect('news.db')
+        cursor = connection.cursor()
 
-    # Select all rows from the 'news' table
-    cursor.execute("SELECT * FROM news")
-    articles = cursor.fetchall()  # Fetch all the data
+        # Select all rows from the 'news' table
+        cursor.execute("SELECT * FROM news")
+        articles = cursor.fetchall()  # Fetch all the data
 
-    # Close the connection to the database
-    connection.close()
+        # Close the connection to the database
+        connection.close()
 
-    # Format the data into a list of dictionaries for JSON response
-    articles_data = [{"id": article[0], "headline": article[1], "summary": article[2], "link": article[3]} for article in articles]
+        # Format the data into a list of dictionaries for JSON response
+        articles_data = [{"id": article[0], "headline": article[1], "summary": article[2], "link": article[3]} for article in articles]
 
-    # Return the articles as a JSON response
-    return jsonify(articles_data)
+        # Return the articles as a JSON response
+        return jsonify(articles_data), 200
+
+    except Exception as e:
+        logging.error(f"Error occurred while fetching news: {e}")
+        return render_template("error.html", error_message=f"Error occurred while fetching news: {e}"), 500
 
 @app.route("/headlines")
 def get_headlines():
@@ -182,12 +165,11 @@ def get_headlines():
         connection.close()
 
         # Return the fetched headlines as a JSON response
-        return jsonify(headlines_data)
+        return jsonify(headlines_data), 200
 
     except Exception as e:
-        # Return an error message if an exception occurs
-        return f"Error occurred while fetching headlines: {e}"
-
+        logging.error(f"Error occurred while fetching headlines: {e}")
+        return render_template("error.html", error_message=f"Error occurred while fetching headlines: {e}"), 500
 
 @app.route("/summaries")
 def get_summaries():
@@ -211,19 +193,18 @@ def get_summaries():
         connection.close()
 
         # Return the fetched summaries as a JSON response
-        return jsonify(summaries_data)
+        return jsonify(summaries_data), 200
 
     except Exception as e:
-        # Return an error message if an exception occurs
-        return f"Error occurred while fetching summaries: {e}"
+        logging.error(f"Error occurred while fetching summaries: {e}")
+        return render_template("error.html", error_message=f"Error occurred while fetching summaries: {e}"), 500
 
 @app.route('/verifyUser', methods=['POST'])
-@limiter.limit("5 per 5 mins")
 def verify_user():
     try:
         data = request.get_json()  # Correctly get JSON data from the request
         token = data.get('token')
-        secret = os.getenv("BACKEND_KEY")
+        secret = os.getenv("RECAPTCHA_SECRET_KEY")
 
         # Send the POST request to Google's reCAPTCHA verification endpoint
         recaptcha_response = requests.post(
@@ -236,25 +217,44 @@ def verify_user():
         result = recaptcha_response.json()
 
         if result.get('success'):
-            return jsonify(message='reCAPTCHA verified successfully!')
+            return jsonify(message='reCAPTCHA verified successfully!'), 200
         else:
             return jsonify(message='Failed to verify reCAPTCHA.'), 400
     except Exception as e:
-        return jsonify(message=str(e)), 500
+        logging.error(f"Error occurred during reCAPTCHA verification: {e}")
+        return render_template("error.html", error_message="Server issue cannot validate at this time!"), 500
 
-#Function to handle User Sign-In with Google
+# Function to handle User Sign-In with Google
 @app.route('/userSignIn', methods=['POST'])
 def userSignIn():
     token = request.json.get('token')
     if not token:
-        return jsonify(message="No token provided"), 400
+        return jsonify(message="No token provided"), 404
     try:
-        id_token.verify_oauth2_token(token, Request(), GOOGLE_CLIENT_KEY)
+        id_token.verify_oauth2_token(token, Request(), GOOGLE_CLIENT_KEY), 200
 
-        return jsonify(message='Google Sign-In successful!')
+        return jsonify(message='Google Sign-In successful!'), 200
 
     except Exception as e:
-        return jsonify(message="Invalid token", error=str(e)), 400
+        logging.error(f"Error occurred during Google Sign-In: {e}")
+        return render_template("error.html", error_message="Invalid token or no token provided", error=str(e)), 500
+
+# 404 Not Found Error handler
+@app.errorhandler(404)
+def not_found(e):
+    logging.error(f"404 error: Page is not found")
+    return render_template("404.html", error_message="Page not found"), 404
+
+# 500 Internal Server Error handler
+@app.errorhandler(500)
+def internal_server_error(e):
+    logging.error(f"500 error: {e}")
+    return render_template("500.html", error_message = "Internal server error, please try again later."), 500
+
+@app.errorhandler(Exception)
+def handle_exception(e):
+    logging.error(f"Unexpected error: {e}")
+    return render_template("error.html", error_message="An unexpected error occurred. Please try again later."), 500
 
 if __name__ == '__main__':
     # Run the Flask app in debug mode on port 5000

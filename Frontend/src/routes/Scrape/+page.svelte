@@ -5,6 +5,8 @@
     import { userData } from "../components/store.ts";
     import { goto } from "$app/navigation";
     import Pokemon from "../components/Pokemon.svelte";
+    import { Navbar, NavBrand, NavLi, NavUl, NavHamburger } from 'flowbite-svelte';
+
 
     function testNavigation() {
         goto('/Favorite');
@@ -18,16 +20,18 @@
         <h1 class="mb-6 text-center text-6xl font-mono text-black">
             Welcome to Mai News Scraper
         </h1>
-        <nav class="flex items-center justify-between px-12">
-            <!-- Displaying the user's name from the userData store -->
-            <p class="px-12 text-4xl text-center">Hello, {$userData.name}</p>
-            <div class="flex justify-center px-12 gap-4">
-            <button on:click={testNavigation} class="mt-4 px-4 py-2 bg-blue-500 text-white rounded">
-                Favorites
-            </button>
+        <Navbar class="flex items-center justify-between px-12 bg-pink-200">
+            <NavBrand>
+            <p class="px-12 text-4xl text-center text-black">Hello, {$userData.name}</p>
+            </NavBrand>
+
+            <NavHamburger />
+            <NavUl class="flex justify-center">
+                <NavLi class="text-xl text-black rounded" href='/Favorite'>Favorites</NavLi>
+            </NavUl>
             <Pokemon/>
-            </div>
-        </nav>
+        </Navbar>
+
     </header>
     <!-- Including the Articles component -->
     <Articles/>

@@ -12,7 +12,6 @@ def create_add_fav():
                             id INTEGER PRIMARY KEY AUTOINCREMENT,
                             username TEXT NOT NULL,
                             news_id INTEGER NOT NULL,
-                            PRIMARY KEY (id, news_id),
                             FOREIGN KEY (news_id) REFERENCES news(id) ON DELETE CASCADE)''')
         connection.commit()
 
@@ -37,7 +36,7 @@ def get_favorites_by_user(username):
             favorites_list = [{'id': article[0], 'headline': article[1], 'summary': article[2], 'link': article[3]} for article in articles]
             return jsonify({'favorites': favorites_list}), 200
         else:
-            return jsonify({'message': 'No favorites found for this user'}), 404
+            return jsonify({'error_message': 'No favorites found for this user'}), 404
 
 # Handle POST request to add favorite articles
 @form_bp.route('/addFavorites', methods=['POST'])
@@ -47,14 +46,14 @@ def add_favorite():
     news_id = data.get('news_id')
 
     if not username or not news_id:
-        return {'error': 'Username and news_id are required'}, 400
+        return {'error_message': 'Username and news_id are required'}, 400
 
     with sqlite3.connect('news.db') as connection:
         cursor = connection.cursor()
         # Check if the favorite already exists
         cursor.execute('SELECT * FROM favArt WHERE username = ? AND news_id = ?', (username, news_id))
         if cursor.fetchone():
-            return {'error': 'This article is already in your favorites'}, 400
+            return {'error_message': 'This article is already in your favorites'}, 400
 
         # Insert the new favorite into the favArt table
         cursor.execute('INSERT INTO favArt (username, news_id) VALUES (?, ?)', (username, news_id))
@@ -70,7 +69,7 @@ def edit_headline():
     new_headline = data.get('new_headline')
 
     if not old_headline or not new_headline:
-        return {'error': 'Old headline and new headline are required'}, 400
+        return {'error_message': 'Old headline and new headline are required'}, 400
 
     with sqlite3.connect('news.db') as connection:
         cursor = connection.cursor()
@@ -79,7 +78,7 @@ def edit_headline():
                           SET headline = ?
                           WHERE headline = ?''', (new_headline, old_headline))
         if cursor.rowcount == 0:
-            return {'error': 'No favorites found for the given headline'}, 404
+            return {'error_message': 'No favorites found for the given headline'}, 404
 
         connection.commit()
 
@@ -93,7 +92,7 @@ def delete_favorite(id):
         # Delete the favorite from the favArt table
         cursor.execute('DELETE FROM favArt WHERE id = ?', (id,))
         if cursor.rowcount == 0:
-            return jsonify({'error': 'Favorite not found'}), 404
+            return jsonify({'error_message': 'Favorite not found'}), 404
 
         connection.commit()
     return jsonify({'message': 'Favorite deleted successfully'}), 200
