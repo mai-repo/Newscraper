@@ -8,18 +8,12 @@
 
     // Subscribe to the userData store to get the username
     $: username = get(userData).name;
+
     // Fetch function to get Pokémon data based on the name
     async function fetchPokemon(name) {
         try {
             // Make the GET request with the Pokémon name
             const response = await fetch(`http://127.0.0.1:5000/catchEm?name=${name}`);
-
-            // Check if the response status is 404 (Not Found)
-            if (response.status === 404) {
-                alert("Pokémon not found!");
-                return;
-            }
-
             const data = await response.json();
 
             // If data is received successfully, set it to the pokemon variable
