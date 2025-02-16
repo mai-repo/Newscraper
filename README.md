@@ -27,10 +27,7 @@ This **Flask**-based application scrapes the latest news headlines and descripti
     - [9. Open Your Web Browser](#9-open-your-web-browser)
     - [10. Testing Instructions](#10-testing-instructions)
       - [1. Set Up the Testing Environment](#1-set-up-the-testing-environment)
-        - [Using unittest](#using-unittest)
       - [2. View Test Coverage Report](#2-view-test-coverage-report)
-        - [Install pytest-cov](#install-pytest-cov)
-        - [Run Tests with Coverage](#run-tests-with-coverage)
   - [Stretch Goals](#stretch-goals)
 
 ## Requirements
@@ -180,7 +177,7 @@ Follow these steps to run the tests for the application:
 Ensure that you have installed all the required dependencies as mentioned in the **Setup Instructions**.
 
 - **Using unittest**  
-To run tests with `unittest`, use the following command:
+  To run tests with `unittest`, use the following command:
 
 ```bash
 python -m unittest discover -s Backend/tests -p "test_*.py"
@@ -191,14 +188,14 @@ python -m unittest discover -s Backend/tests -p "test_*.py"
 If you want to generate a test coverage report, you can use `pytest-cov`.
 
 - **Install pytest-cov**  
-Install `pytest-cov` using the following command:
+  Install `pytest-cov` using the following command:
 
 ```bash
 pip install pytest-cov
 ```
 
 - **Run Tests with Coverage**  
-Run the tests with coverage using the following command:
+  Run the tests with coverage using the following command:
 
 ```bash
 pytest --cov=Backend --cov-report=html Backend/tests
