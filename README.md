@@ -3,6 +3,8 @@
 
 This **Flask**-based application scrapes the latest news headlines and descriptions from **The Atlantic** and stores the data before rendering it on a webpage. Additionally, it integrates with the Pokémon API to fetch and manage Pokémon data.
 
+![Mai_Website](https://github.com/user-attachments/assets/51143271-001e-4812-933f-b7ce21c88d98)
+
 ## Table of Contents
 - [News Scraper Application](#news-scraper-application)
   - [Table of Contents](#table-of-contents)
