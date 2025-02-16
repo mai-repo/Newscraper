@@ -239,6 +239,16 @@ def userSignIn():
         logging.error(f"Error occurred during Google Sign-In: {e}")
         return render_template("error.html", error_message="Invalid token or no token provided", error=str(e)), 500
 
+# Route to explicitly serve the 500 error page with a custom error message
+@app.route("/500")
+def serve_500_page():
+    error_message = "Internal server error, please try again later."
+    return render_template("500.html", error_message=error_message), 500
+
+@app.route('/error')
+def handle_exception(e):
+    return render_template("error.html", error_message="An unexpected error occurred. Please try again later."), 500
+
 # 404 Not Found Error handler
 @app.errorhandler(404)
 def not_found(e):
