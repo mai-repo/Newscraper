@@ -18,12 +18,18 @@ This **Flask**-based application scrapes the latest news headlines and descripti
       - [3. Set Up reCAPTCHA](#3-set-up-recaptcha)
       - [4. Create `.env` File](#4-create-env-file)
     - [6. Data Schema](#6-data-schema)
-      - [News Data Schema](#news-data-schema)
-      - [Pokémon Data Schema](#pokémon-data-schema)
-      - [Favorite Articles Data Schema](#favorite-articles-data-schema)
+        - [News Data Schema](#news-data-schema)
+        - [Pokémon Data Schema](#pokémon-data-schema)
+        - [Favorite Articles Data Schema](#favorite-articles-data-schema)
     - [7. Download Frontend Dependencies](#7-download-frontend-dependencies)
     - [8. Run the Flask Application](#8-run-the-flask-application)
-    - [9. Open your web browser](#89-open-your-web-browser)
+    - [9. Open your web browser](#9-open-your-web-browser)
+- [Testing Instructions](#testing-instructions)
+  - [1. Set Up the Testing Environment](#1-set-up-the-testing-environment)
+    - [Using unittest](#using-unittest)
+  - [2. View Test Coverage Report](#2-view-test-coverage-report)
+    - [Install pytest-cov](#install-pytest-cov)
+    - [Run Tests with Coverage](#run-tests-with-coverage)
   - [Stretch Goals](#stretch-goals)
 
 ## Requirements
@@ -143,6 +149,43 @@ flask run
 ### 9. Open your web browser
 ![A webpage with a webscraper that asks user to click a button to scrape data from the Atlantic and returns a JSON file with the latest headlines](https://i.imgflip.com/9iamed.gif)
 
+# Testing Instructions
+
+Follow these steps to run the tests for the application:
+
+## 1. Set Up the Testing Environment
+Ensure that you have installed all the required dependencies as mentioned in the **Setup Instructions**.
+
+### Using unittest
+To run tests with `unittest`, use the following command:
+
+```bash
+python -m unittest discover -s Backend/tests -p "test_*.py"
+```
+
+## 2. View Test Coverage Report
+If you want to generate a test coverage report, you can use `pytest-cov`.
+
+### Install pytest-cov
+Install `pytest-cov` using the following command:
+
+```bash
+pip install pytest-cov
+```
+
+### Run Tests with Coverage
+Run the tests with coverage using the following command:
+
+```bash
+pytest --cov=Backend --cov-report=html Backend/tests
+```
+
+This will generate a coverage report in the `htmlcov` directory. You can view the report by opening the `index.html` file in a web browser:
+
+```bash
+open htmlcov/index.html
+```
+
+
 ## Stretch Goals
 - Allow users to choose from a variety of news sites
-- A music player to let user listen to music while browsing articles
