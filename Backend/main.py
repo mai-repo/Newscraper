@@ -1,5 +1,7 @@
 from flask import Flask, render_template, request, jsonify, send_from_directory
-import requests
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
+from redis import Redis
 from bs4 import BeautifulSoup
 import sqlite3
 import os
@@ -10,6 +12,7 @@ from flask_cors import CORS
 from form import form_bp
 from pokemon import pokemon
 import logging
+import requests
 
 # Load environment variables from .env file
 load_dotenv()
@@ -47,12 +50,14 @@ setup_database()
 # Initialize the Flask application
 app = Flask(__name__)
 
+CORS(app, resources={r"/*": {"origins": "http://localhost:5173"}})
+
 # Configure Flask-Limiter to use Redis
 limiter = Limiter(
     get_remote_address,
     app=app,
     storage_uri="redis://127.0.0.1:6379",  # Use Redis as the storage backend
-    default_limits=["5 per 3 minutes"],
+    default_limits=["50 per 3 minutes"],
 )
 
 # Register the Blueprint
@@ -243,7 +248,7 @@ def verify_user():
             return jsonify(message='Failed to verify reCAPTCHA.'), 400
     except Exception as e:
         logging.error(f"Error occurred during reCAPTCHA verification: {e}")
-        return render_template("error.html", error_message="Server issue cannot validate at this time!"), 500
+        return jsonify(error="Server issue cannot validate at this time!"), 500
 
 # Function to handle User Sign-In with Google
 @app.route('/userSignIn', methods=['POST'])
