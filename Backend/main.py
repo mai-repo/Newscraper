@@ -122,13 +122,24 @@ def scrape():
 @app.route('/news', methods=['GET'])
 def get_news():
     try:
+        # Get pagination parameters from request args,
+        page = request.args.get('page', 1, type=int)
+        per_page = request.args.get('per_page', 10, type=int)
+
         # Connect to the SQLite database
         connection = sqlite3.connect('news.db')
         cursor = connection.cursor()
 
         # Select all rows from the 'news' table
-        cursor.execute("SELECT * FROM news")
-        articles = cursor.fetchall()  # Fetch all the data
+        cursor.execute("SELECT COUNT(*) FROM news")
+        total_articles = cursor.fetchone()[0]
+
+        total_pages = (total_articles + per_page - 1) // per_page
+
+        # Fetch the paginated results
+        start = (page - 1) * per_page
+        cursor.execute("SELECT * FROM news LIMIT ? OFFSET ?", (per_page, start))
+        articles = cursor.fetchall()
 
         # Close the connection to the database
         connection.close()
@@ -136,8 +147,13 @@ def get_news():
         # Format the data into a list of dictionaries for JSON response
         articles_data = [{"id": article[0], "headline": article[1], "summary": article[2], "link": article[3]} for article in articles]
 
-        # Return the articles as a JSON response
-        return jsonify(articles_data), 200
+        return jsonify({
+            "current_page": page,
+            "total_pages": total_pages,
+            "per_page": per_page,
+            "total_articles": total_articles,
+            "articles": articles_data
+        }), 200
 
     except Exception as e:
         logging.error(f"Error occurred while fetching news: {e}")

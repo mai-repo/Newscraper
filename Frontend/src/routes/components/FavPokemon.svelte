@@ -1,6 +1,8 @@
 <script>
     let pokemon = null;
     let image = '';
+    import { onMount } from 'svelte';
+
 
     // Function to fetch favorite Pokemon data
     async function pokemonData(){
@@ -15,6 +17,7 @@
         } catch (error) {
             console.error("Error fetching Pokemon");
         }
+
     }
 
     // Function to delete a Pokemon by id
@@ -62,26 +65,31 @@
         console.error("Error updating photo:", error);
     }
     }
+    onMount(() => {
+        pokemonData();
+    });
 </script>
-<!-- Button to fetch favorite Pokemon data -->
-<button class="x-4 p-2 mb-4 bg-green-700 text-white rounded hover:bg-blue-700" on:click={pokemonData}>Get Favorite Pokemon</button>
 
 {#if pokemon}
-    <div class="justify-center mb-8">
+    <div class="justify-center mb-8 bg-white p-3 rounded border outline-black">
         {#each pokemon as p (p.id)}
             <!-- Display Pokemon name -->
-            <h2 style="color: blue; font-size: 24px; margin-bottom: 10px;">{p.pokemonName}</h2>
+            <h2 style="color: blue; font-size: 24px; margin-bottom: 10px;">{p.pokemonName.toUpperCase()}</h2>
             <div>
                 <!-- Display Pokemon image -->
                 <img src={p.image} alt={p.Name} />
                 <!-- Form to update Pokemon image -->
-                <form on:submit|preventDefault={() => updatePhoto(p.id, image)}>
-                    <input type="text" bind:value={image} placeholder="Enter new image URL" />
-                    <button class="x-4 p-2 mb-4 bg-green-700 text-white rounded hover:bg-blue-700 submit">Change Profile Image</button>
-                </form>
+                <div class="flex gap-3">
+                    <form on:submit|preventDefault={() => updatePhoto(p.id, image)}>
+                        <input type="text" bind:value={image} placeholder="Enter new image URL" style="border: 1px solid black; padding: 8px; border-radius: 4px" />
+                        <button class="x-4 p-2 mb-4 bg-green-700 text-white rounded hover:bg-blue-700 submit">Change Profile Image</button>
+                    </form>
+                    <button class="x-4 p-2 mb-4 bg-pink-700 text-white rounded hover:bg-blue-700" on:click={() => deletePokemon(p.id)}>Delete Pokemon</button>
+                </div>
+
             </div>
             <!-- Button to delete Pokemon -->
-            <button class="x-4 p-2 mb-4 bg-pink-700 text-white rounded hover:bg-blue-700" on:click={() => deletePokemon(p.id)}>Delete Pokemon</button>
+
         {/each}
     </div>
 {/if}

@@ -1,35 +1,64 @@
 <script>
     import AddFavorite from "./AddFavorite.svelte";
-    import { news, articlesData } from "./store.ts";
+    import { news } from "./store.ts";
+    import { Pagination, Spinner} from 'flowbite-svelte';
+    import { ChevronLeftOutline, ChevronRightOutline } from 'flowbite-svelte-icons';
 
     let searchInput = '';
+    let currentPage = 1
+    let totalPages = 1
+    let perPage = 10; // Number of articles per page
+    let loading = false;
 
     // Function to scrape news articles from the backend
     async function scrapeNews() {
         try {
             const response = await fetch('http://127.0.0.1:5000/scrape');
             const data = await response.json();
-            articlesData.set(data); // Update the articlesData store with the scraped data
+            news.set(data); // Update the news store with scraped data
         } catch (error) {
             console.error('Error scraping news:', error);
         }
     }
 
-    // Function to fetch news articles from the backend
-    async function fetchNews() {
+    // Function to fetch news articles from the backend with pagination
+    async function fetchNews(page = 1) {
         try {
-            const response = await fetch('http://127.0.0.1:5000/news');
+            loading = true;
+            const response = await fetch(`http://127.0.0.1:5000/news?page=${page}&per_page=${perPage}`);
             const data = await response.json();
-            news.set(data); // Update the news store with the fetched data
+            news.set(data.articles);
+            currentPage = data.current_page;
+            totalPages = data.total_pages;
+            console.log($news)
+
         } catch (error) {
             console.log('Error fetching news:', error);
+        }  finally {
+            loading = false;
         }
     }
 
     // Function to filter by Headline Title
     function filterHeadlines() {
-        return $news.filter(article => article.headline.toLowerCase().includes(searchInput.toLowerCase()));
+        return $news.filter(article =>
+            article.headline.toLowerCase().includes(searchInput.toLowerCase())
+        ) || [];
     }
+
+    // Pagination functions
+    function previousPage() {
+        if (currentPage> 1) {
+            fetchNews(currentPage- 1);
+        }
+    }
+
+    function nextPage() {
+        if (currentPage < totalPages) {
+            fetchNews(currentPage + 1);
+        }
+    }
+
 </script>
 
 <main class="flex flex-col justify-center items-center py-5 gap-3">
@@ -40,12 +69,12 @@
             Scrape News
         </button>
         <!-- Button to trigger fetching news articles -->
-        <button on:click={fetchNews} class="p-2 bg-green-500 text-white rounded hover:bg-green-700">
+        <button on:click={() => fetchNews(1)} class="p-2 bg-green-500 text-white rounded hover:bg-green-700">
             Fetch News
         </button>
 
         <!-- Input field to filter headlines with form validation -->
-        <form on:submit|preventDefault class="flex justify-center gap-4  ">
+        <form on:submit|preventDefault class="flex justify-center gap-4">
             <input
                 type="text"
                 placeholder="Search headlines..."
@@ -59,16 +88,29 @@
             </button>
         </form>
     </div>
-<!-- Display filtered articles with headline, summary, link, and option to add to favorites -->
-{#if $news.length > 0}
-    {#each filterHeadlines() as article (article.id)}
-        <div class="p-4 bg-white w-1/2 rounded-lg shadow-md mb-4">
-            <h1 class="mb-2 text-2xl text-blue-800">Headline: {article.headline}</h1>
-            <p class="mb-2">{article.summary}</p>
-            <a class="text-sm text-indigo-500" href="{article.link}" target="_blank">Read more</a>
-            <!-- Component to add article to favorites -->
-            <AddFavorite news_id={article.id}></AddFavorite>
-        </div>
-    {/each}
-{/if}
+
+    <!-- Display filtered articles -->
+    {#if loading}
+    <Spinner color="green" size={8} />
+    {:else if filterHeadlines().length > 0}
+        {#each filterHeadlines() as article (article.id)}
+            <div class="p-4 bg-white w-1/2 rounded-lg shadow-md mb-4">
+                <h1 class="mb-2 text-2xl text-blue-800">Headline: {article.headline}</h1>
+                <p class="mb-2">{article.summary}</p>
+                <a class="text-sm text-indigo-500" href="{article.link}" target="_blank">Read more</a>
+                <AddFavorite news_id={article.id}></AddFavorite>
+            </div>
+        {/each}
+    {:else}
+        <p>No articles found.</p>
+    {/if}
+    <!-- Pagination Component -->
+    <Pagination {currentPage} {totalPages} on:previous={previousPage} on:next={nextPage} icon>
+        <svelte:fragment slot="prev">
+            <ChevronLeftOutline class="w-5 h-5" />
+        </svelte:fragment>
+        <svelte:fragment slot="next">
+            <ChevronRightOutline class="w-5 h-5" />
+        </svelte:fragment>
+    </Pagination>
 </main>
