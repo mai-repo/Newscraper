@@ -45,10 +45,15 @@ def setup_database():
 setup_database()
 
 # Initialize the Flask application
-app = Flask(__name__, template_folder='/Users/thanhmai/Newscraper/Backend/templates')
+app = Flask(__name__)
 
-# Allow all origins (for local development)
-CORS(app, supports_credentials=True)
+# Configure Flask-Limiter to use Redis
+limiter = Limiter(
+    get_remote_address,
+    app=app,
+    storage_uri="redis://127.0.0.1:6379",  # Use Redis as the storage backend
+    default_limits=["5 per 3 minutes"],
+)
 
 # Register the Blueprint
 app.register_blueprint(form_bp)
