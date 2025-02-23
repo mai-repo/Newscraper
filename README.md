@@ -34,7 +34,7 @@ This **Flask**-based application scrapes the latest news headlines and descripti
 
 ## Requirements
 
-The following Python packages are required to run the application:
+The following packages are required to run the application:
 - **Flask**: Web framework for Python.
 - **requests**: HTTP library for sending GET requests to fetch the news data.
 - **beautifulsoup4**: Library for parsing HTML and scraping data.
