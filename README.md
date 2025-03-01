@@ -23,6 +23,7 @@ This **Flask**-based application scrapes the latest news headlines and descripti
       - [News Data Schema](#news-data-schema)
       - [Pokémon Data Schema](#pokémon-data-schema)
       - [Favorite Articles Data Schema](#favorite-articles-data-schema)
+      - [Virtual Table for Full-Text Search](#virtual-table-for-full-text-search)
     - [7. Download Frontend Dependencies](#7-download-frontend-dependencies)
     - [8. Run the Flask Application](#8-run-the-flask-application)
     - [9. Open Your Web Browser](#9-open-your-web-browser)
@@ -147,6 +148,17 @@ CREATE TABLE IF NOT EXISTS favArt (
     username TEXT NOT NULL,
     news_id INTEGER NOT NULL,
     FOREIGN KEY (news_id) REFERENCES news(id) ON DELETE CASCADE
+);
+```
+
+#### Virtual Table for Full-Text Search
+The virtual table for full-text search is created using the following schema:
+
+```sql
+CREATE VIRTUAL TABLE IF NOT EXISTS news_fts USING fts5(
+    headline,
+    summary,
+    link
 );
 ```
 
