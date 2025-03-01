@@ -42,7 +42,9 @@
 		"vite": "^6.0.0"
 	},
 	"dependencies": {
+		"chart.js": "^4.4.8",
 		"flowbite-svelte": "^0.47.4",
+		"flowbite-svelte-icons": "^2.0.2",
 		"jwt-decode": "^4.0.0",
 		"svelte-routing": "^2.13.0"
 	}

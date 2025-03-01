@@ -1,9 +1,8 @@
-
 # News Scraper Application
 
 This **Flask**-based application scrapes the latest news headlines and descriptions from **The Atlantic** and stores the data before rendering it on a webpage. Additionally, it integrates with the Pokémon API to fetch and manage Pokémon data.
 
-![Mai_Website](https://github.com/user-attachments/assets/51143271-001e-4812-933f-b7ce21c88d98)
+![FrontPage](https://github.com/user-attachments/assets/7244fd6c-9728-45e4-9faf-bd2dbe50aaa9)
 
 ## Table of Contents
 - [News Scraper Application](#news-scraper-application)
@@ -30,6 +29,8 @@ This **Flask**-based application scrapes the latest news headlines and descripti
     - [10. Testing Instructions](#10-testing-instructions)
       - [1. Set Up the Testing Environment](#1-set-up-the-testing-environment)
       - [2. View Test Coverage Report](#2-view-test-coverage-report)
+    - [Advanced Search](#advanced-search)
+      - [How to Use Advanced Search](#how-to-use-advanced-search)
   - [Stretch Goals](#stretch-goals)
 
 ## Requirements
@@ -211,6 +212,15 @@ This will generate a coverage report in the `htmlcov` directory. You can view th
 ```bash
 open htmlcov/index.html
 ```
+### Advanced Search
+The advanced search feature allows users to search for news articles based on specific keywords. This feature enhances the user experience by providing more relevant search results.
 
+#### How to Use Advanced Search
+1. Navigate to the Search Page: Go to the search page in the application.
+2. Enter Keywords: Enter the keywords you want to search for in the search bar.
+3. View Results: The application will display the news articles that match the entered keywords.
+
+**Example**
+- If you want to search for articles related to "economy" or "Trump", enter "economy"  and "trump" in the search bar and press enter. The application will display all articles that contain the keyword "economy".
 ## Stretch Goals
 - Allow users to choose from a variety of news sites

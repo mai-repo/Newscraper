@@ -28,6 +28,7 @@ auth_provider_x509_cert_url = "https://www.googleapis.com/oauth2/v1/certs"
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+
 # Function to initialize the database by creating the 'news' table if it doesn't exist
 def setup_database():
     # Connect to the SQLite database (or create it if it doesn't exist)
@@ -41,11 +42,34 @@ def setup_database():
                         summary TEXT NOT NULL,
                         link TEXT NOT NULL)''')
 
+    # Create the FTS5 virtual table for full-text search
+    cursor.execute('''CREATE VIRTUAL TABLE IF NOT EXISTS news_fts USING fts5(
+                        id, headline, summary, link)''')  # Include 'id' in the FTS table
+
+    # Trigger to keep the FTS5 table in sync with the news table
+    cursor.execute('''CREATE TRIGGER IF NOT EXISTS news_ai AFTER INSERT ON news
+                      BEGIN
+                          INSERT INTO news_fts(rowid, id, headline, summary, link)
+                          VALUES (new.id, new.id, new.headline, new.summary, new.link);
+                      END;''')
+
+    cursor.execute('''CREATE TRIGGER IF NOT EXISTS news_ad AFTER DELETE ON news
+                      BEGIN
+                          DELETE FROM news_fts WHERE id = old.id;
+                      END;''')
+
+    cursor.execute('''CREATE TRIGGER IF NOT EXISTS news_au AFTER UPDATE ON news
+                      BEGIN
+                          UPDATE news_fts SET headline = new.headline, summary = new.summary, link = new.link
+                          WHERE id = old.id;
+                      END;''')
+
     connection.commit()
     connection.close()
 
 # Call the function to initialize the database
 setup_database()
+
 
 # Initialize the Flask application
 app = Flask(__name__)
@@ -173,18 +197,24 @@ def get_news():
 def get_headlines():
     """
     Fetches all headlines from the 'news' table in the SQLite database
-    and returns them as a JSON response.
+    that match the specified keywords and returns them as a JSON response.
     """
     try:
         # Connect to the SQLite database
         connection = sqlite3.connect('news.db')
         cursor = connection.cursor()
 
-        # Execute SQL query to fetch all headlines from the 'news' table
-        cursor.execute("SELECT headline FROM news")
+        # Define the keywords to filter headlines
+        keywords = ["Trump", "America", "DOGE"]
+
+        # Prepare the SQL query to fetch headlines containing the keywords
+        query = f"SELECT headline FROM news WHERE headline LIKE '%{keywords[0]}%' OR headline LIKE '%{keywords[1]}%' OR headline LIKE '%{keywords[2]}%'"
+
+        # Execute the SQL query
+        cursor.execute(query)
         rows = cursor.fetchall()
 
-        # Prepare a list of dictionaries, each containing the id and headline
+        # Prepare a list of dictionaries, each containing the headline
         headlines_data = [{'headline': row[0]} for row in rows]
 
         # Close the database connection
@@ -192,38 +222,38 @@ def get_headlines():
 
         # Return the fetched headlines as a JSON response
         return jsonify(headlines_data), 200
-
     except Exception as e:
-        logging.error(f"Error occurred while fetching headlines: {e}")
-        return render_template("error.html", error_message=f"Error occurred while fetching headlines: {e}"), 500
+        logging.error(f"Error occurred while fetching summaries: {e}")
+        return render_template("error.html", error_message=f"Error occurred while fetching summaries: {e}"), 500
 
-@app.route("/summaries")
-def get_summaries():
-    """
-    Fetches all summaries from the 'news' table in the SQLite database
-    and returns them as a JSON response.
-    """
+#complex search
+@app.route('/search', methods=['GET'])
+def search_articles():
     try:
+        # Get the search query for headline and summary from request args
+        headline_query = request.args.get('headline_query', '', type=str)
+        summary_query = request.args.get('summary_query', '', type=str)
+
         # Connect to the SQLite database
         connection = sqlite3.connect('news.db')
         cursor = connection.cursor()
 
-        # Execute SQL query to fetch all summaries from the 'news' table
-        cursor.execute("SELECT summary FROM news")
-        rows = cursor.fetchall()
+        # Perform full-text search on the 'news_fts' virtual table for both headline and summary
+        cursor.execute('''SELECT id, headline, summary, link FROM news_fts
+                          WHERE headline MATCH ? OR summary MATCH ?''', (headline_query, summary_query))
+        articles = cursor.fetchall()
 
-        # Prepare a list of dictionaries, each containing the summary
-        summaries_data = [{'summary': row[0]} for row in rows]
-
-        # Close the database connection
+        # Close the connection to the database
         connection.close()
 
-        # Return the fetched summaries as a JSON response
-        return jsonify(summaries_data), 200
+        # Format the data into a list of dictionaries for JSON response
+        articles_data = [{"id": article[0], "headline": article[1], "summary": article[2], "link": article[3]} for article in articles]
+
+        return jsonify(articles_data), 200
 
     except Exception as e:
-        logging.error(f"Error occurred while fetching summaries: {e}")
-        return render_template("error.html", error_message=f"Error occurred while fetching summaries: {e}"), 500
+        logging.error(f"Error occurred during search: {e}")
+        return render_template("error.html", error_message=f"Error occurred during search: {e}"), 500
 
 @app.route('/verifyUser', methods=['POST'])
 def verify_user():

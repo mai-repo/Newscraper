@@ -1,14 +1,18 @@
 <script>
     import AddFavorite from "./AddFavorite.svelte";
+    import Chart from "./Chart.svelte";
     import { news } from "./store.ts";
-    import { Pagination, Spinner} from 'flowbite-svelte';
+    import { Pagination } from 'flowbite-svelte';
     import { ChevronLeftOutline, ChevronRightOutline } from 'flowbite-svelte-icons';
 
     let searchInput = '';
-    let currentPage = 1
-    let totalPages = 1
+    let headlineSearchInput = '';
+    let summarySearchInput = '';
+    let currentPage = 1;
+    let totalPages = 1;
     let perPage = 10; // Number of articles per page
-    let loading = false;
+    let isAdvancedSearch = false; // Flag to toggle between basic and advanced search
+    let isAdvancedSearchVisible = false; // Flag to show/hide advanced search form
 
     // Function to scrape news articles from the backend
     async function scrapeNews() {
@@ -24,32 +28,51 @@
     // Function to fetch news articles from the backend with pagination
     async function fetchNews(page = 1) {
         try {
-            loading = true;
             const response = await fetch(`http://127.0.0.1:5000/news?page=${page}&per_page=${perPage}`);
             const data = await response.json();
             news.set(data.articles);
             currentPage = data.current_page;
             totalPages = data.total_pages;
-            console.log($news)
-
+            console.log($news);
         } catch (error) {
             console.log('Error fetching news:', error);
-        }  finally {
-            loading = false;
         }
     }
 
-    // Function to filter by Headline Title
-    function filterHeadlines() {
-        return $news.filter(article =>
+    // Function to perform a search based on the search term and search type (headline only or advanced)
+    async function performSearch() {
+        if (isAdvancedSearch) {
+            advancedSearch();
+        } else {
+            basicSearch();
+        }
+    }
+
+    // Basic search that filters by headline only
+    function basicSearch() {
+        const filteredNews = $news.filter(article =>
             article.headline.toLowerCase().includes(searchInput.toLowerCase())
-        ) || [];
+        );
+        news.set(filteredNews);
+    }
+
+    // Advanced search that filters by both headline and summary
+    async function advancedSearch() {
+        try {
+            const filteredNews = $news.filter(article =>
+                (article.headline.toLowerCase().includes(headlineSearchInput.toLowerCase()) ||
+                article.summary.toLowerCase().includes(summarySearchInput.toLowerCase()))
+            );
+            news.set(filteredNews);
+        } catch (error) {
+            console.error('Error performing advanced search:', error);
+        }
     }
 
     // Pagination functions
     function previousPage() {
-        if (currentPage> 1) {
-            fetchNews(currentPage- 1);
+        if (currentPage > 1) {
+            fetchNews(currentPage - 1);
         }
     }
 
@@ -58,11 +81,11 @@
             fetchNews(currentPage + 1);
         }
     }
-
 </script>
 
 <main class="flex flex-col justify-center items-center py-5 gap-3">
     <h1 class="text-4xl text-black">Articles from the Atlantic</h1>
+    <Chart />
     <div class="flex justify-center items-center gap-4">
         <!-- Button to trigger scraping news articles -->
         <button on:click={scrapeNews} class="p-2 bg-blue-500 text-white rounded hover:bg-blue-700">
@@ -83,17 +106,44 @@
                 required
                 minlength="3"
             />
-            <button type="submit" class="p-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+            <button type="submit" on:click={performSearch} class="p-2 bg-blue-600 text-white rounded hover:bg-blue-700">
                 Search
             </button>
         </form>
+
+        <!-- Toggle for advanced search -->
+        <div>
+            <label for="advanced-search" class="mr-2">Advanced Search</label>
+            <input id="advanced-search" type="checkbox" bind:checked={isAdvancedSearch} on:change={() => isAdvancedSearchVisible = !isAdvancedSearchVisible} />
+        </div>
+
+        <!-- Advanced Search Form -->
+        {#if isAdvancedSearchVisible}
+            <div class="advanced-search-form mt-4 flex flex-col gap-3">
+                <input
+                    type="text"
+                    placeholder="Search headlines..."
+                    bind:value={headlineSearchInput}
+                    class="px-4 p-2 border rounded w-full"
+                    minlength="3"
+                />
+                <input
+                    type="text"
+                    placeholder="Search summaries..."
+                    bind:value={summarySearchInput}
+                    class="px-4 p-2 border rounded w-full"
+                    minlength="3"
+                />
+                <button on:click={performSearch} class="p-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+                    Perform Advanced Search
+                </button>
+            </div>
+        {/if}
     </div>
 
     <!-- Display filtered articles -->
-    {#if loading}
-    <Spinner color="green" size={8} />
-    {:else if filterHeadlines().length > 0}
-        {#each filterHeadlines() as article (article.id)}
+    {#if $news.length > 0}
+        {#each $news as article (article.id)}
             <div class="p-4 bg-white w-1/2 rounded-lg shadow-md mb-4">
                 <h1 class="mb-2 text-2xl text-blue-800">Headline: {article.headline}</h1>
                 <p class="mb-2">{article.summary}</p>
@@ -104,6 +154,7 @@
     {:else}
         <p>No articles found.</p>
     {/if}
+
     <!-- Pagination Component -->
     <Pagination {currentPage} {totalPages} on:previous={previousPage} on:next={nextPage} icon>
         <svelte:fragment slot="prev">
