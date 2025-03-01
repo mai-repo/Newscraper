@@ -113,7 +113,7 @@ RECAPTCHA_SECRET_KEY=your-recaptcha-secret-key
 ### 6. Data Schema
 
 #### News Data Schema
-![2](https://github.com/user-attachments/assets/e3b420e0-ff5e-4a5d-a4c5-25208361f929)
+![News Data Schema](https://github.com/user-attachments/assets/e3b420e0-ff5e-4a5d-a4c5-25208361f929)
 
 The news data is stored in an SQLite database with the following schema:
 
@@ -125,9 +125,8 @@ CREATE TABLE IF NOT EXISTS news (
     link TEXT NOT NULL
 );
 ```
-![4](https://github.com/user-attachments/assets/5c0f49d2-d233-472a-92f1-ac0b74d4c979)
-
 #### Pokémon Data Schema
+![Pokémon Data Schema](https://github.com/user-attachments/assets/5c0f49d2-d233-472a-92f1-ac0b74d4c979)
 The Pokémon data is stored in an SQLite database with the following schema:
 
 ```sql
@@ -139,7 +138,7 @@ CREATE TABLE IF NOT EXISTS pokemon (
 );
 ```
 #### Favorite Articles Data Schema
-![3](https://github.com/user-attachments/assets/8af9bd20-2966-42eb-a046-80e13690077d)
+![Favorite Articles Data Schema](https://github.com/user-attachments/assets/8af9bd20-2966-42eb-a046-80e13690077d)
 The favorite articles data is stored in an SQLite database with the following schema:
 
 ```sql
@@ -152,6 +151,8 @@ CREATE TABLE IF NOT EXISTS favArt (
 ```
 
 #### Virtual Table for Full-Text Search
+![Virtual Table](https://github.com/user-attachments/assets/fcc4f364-d6eb-4556-affc-539593c85a8b)
+
 The virtual table for full-text search is created using the following schema:
 
 ```sql
