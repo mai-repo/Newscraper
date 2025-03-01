@@ -44,7 +44,7 @@ def setup_database():
 
     # Create the FTS5 virtual table for full-text search
     cursor.execute('''CREATE VIRTUAL TABLE IF NOT EXISTS news_fts USING fts5(
-                        id, headline, summary, link)''')  # Include 'id' in the FTS table
+                        id, headline, summary, link)''')  
 
     # Trigger to keep the FTS5 table in sync with the news table
     cursor.execute('''CREATE TRIGGER IF NOT EXISTS news_ai AFTER INSERT ON news
