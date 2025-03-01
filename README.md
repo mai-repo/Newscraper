@@ -157,6 +157,7 @@ The virtual table for full-text search is created using the following schema:
 
 ```sql
 CREATE VIRTUAL TABLE IF NOT EXISTS news_fts USING fts5(
+    id, 
     headline,
     summary,
     link
