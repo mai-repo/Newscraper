@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: news-scraper
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: flask run --host=0.0.0.0 --port=10000
+    envVars:
+      - key: FLASK_ENV
+        value: production
+      - key: GOOGLE_CLIENT_KEY
+        fromDatabase: GOOGLE_CLIENT_KEY
+      - key: BACKEND_KEY
+        fromDatabase: BACKEND_KEY
