@@ -10,7 +10,7 @@
 
     onMount(async () => {
         try {
-            const response = await fetch("http://127.0.0.1:5000/headlines");
+            const response = await fetch("https://mai-newscraper.onrender.com/headlines");
             const data = await response.json();
             console.log("Fetched Data:", data);  // Debugging statement
             headlinesData = data;

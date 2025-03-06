@@ -10,7 +10,7 @@
         const token = response.credential;
         const decoded = jwtDecode(token); // Decode JWT
 
-        fetch('http://127.0.0.1:5000/userSignIn', {
+        fetch('https://mai-newscraper.onrender.com/userSignIn', {
             method: 'POST',
             headers: {
                 "Content-Type": "application/json",

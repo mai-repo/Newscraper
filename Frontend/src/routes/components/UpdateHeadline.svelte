@@ -11,7 +11,7 @@
 
         try {
             // Send a PUT request to update the headline
-            const response = await fetch('http://127.0.0.1:5000/editHeadline', {
+            const response = await fetch('https://mai-newscraper.onrender.com/editHeadline', {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json'

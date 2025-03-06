@@ -13,7 +13,7 @@
     async function fetchPokemon(name) {
         try {
             // Make the GET request with the Pokémon name
-            const response = await fetch(`http://127.0.0.1:5000/catchEm?name=${name}`);
+            const response = await fetch(`https://mai-newscraper.onrender.com/catchEm?name=${name}`);
             const data = await response.json();
 
             // If data is received successfully, set it to the pokemon variable
@@ -35,7 +35,7 @@
 
         try {
             // Make the POST request to save the Pokémon data
-            const response = await fetch(`http://127.0.0.1:5000/savePokemon`, {
+            const response = await fetch(`https://mai-newscraper.onrender.com/savePokemon`, {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json',

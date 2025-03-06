@@ -6,7 +6,7 @@
     async function deleteArticle(id) {
         try {
             // Send a DELETE request to the server
-            const response = await fetch(`http://127.0.0.1:5000/deleteFavorite/${id}`, {
+            const response = await fetch(`https://mai-newscraper.onrender.com/deleteFavorite/${id}`, {
                 method: 'DELETE',
             });
 

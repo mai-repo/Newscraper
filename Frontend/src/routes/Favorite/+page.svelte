@@ -13,7 +13,7 @@
     // Function to fetch favorite articles for the user
     async function getFav() {
         try {
-            const response = await fetch(`http://127.0.0.1:5000/favorites/${userName}`);
+            const response = await fetch(`https://mai-newscraper.onrender.com/favorites/${userName}`);
             const data = await response.json();
             favArticles.set(data.favorites); // Update the store with fetched favorite articles
             showPokemon = false; // Ensure articles are shown

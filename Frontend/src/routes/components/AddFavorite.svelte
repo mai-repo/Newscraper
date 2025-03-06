@@ -15,7 +15,7 @@
     async function addFavorite() {
         try {
             // Send a POST request to the server to add the favorite
-            const response = await fetch(`http://127.0.0.1:5000/addFavorites`, {
+            const response = await fetch(`https://mai-newscraper.onrender.com/addFavorites`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

@@ -7,7 +7,7 @@
     // Function to fetch favorite Pokemon data
     async function pokemonData(){
         try {
-            const response = await fetch('http://127.0.0.1:5000/getPokemon');
+            const response = await fetch('https://mai-newscraper.onrender.com/getPokemon');
             const data = await response.json();
 
             if (data){
@@ -23,7 +23,7 @@
     // Function to delete a Pokemon by id
     async function deletePokemon(id) {
         try {
-            const response = await fetch(`http://127.0.0.1:5000/deletePokemon/${id}`, {
+            const response = await fetch(`https://mai-newscraper.onrender.com/deletePokemon/${id}`, {
                 method: "DELETE",
             });
             if (response.ok) {
@@ -45,7 +45,7 @@
             image: image
         };
         try {
-            const response = await fetch('http://127.0.0.1:5000/changeProfile', {
+            const response = await fetch('https://mai-newscraper.onrender.com/changeProfile', {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json'

@@ -8,7 +8,7 @@
 
         if (token) {
             // Send the token to the backend for verification
-            fetch('http://127.0.0.1:5000/verifyUser', {
+            fetch('https://mai-newscraper.onrender.com/verifyUser', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
