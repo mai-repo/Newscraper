@@ -1,12 +1,7 @@
 from flask import Flask, render_template, request, jsonify, send_from_directory
-from flask_limiter import Limiter
-<<<<<<< HEAD
-from flask_limiter.util import get_remote_address
-# from redis import Redis
-=======
+# from flask_limiter import Limiter
 # from flask_limiter.util import get_remote_address
-from redis import Redis
->>>>>>> b28af42 (Update backend and frontend URLs to point to the production server; adjust .gitignore and clean up commented code)
+# from redis import Redis
 from bs4 import BeautifulSoup
 import sqlite3
 import os
@@ -49,11 +44,7 @@ def setup_database():
 
     # Create the FTS5 virtual table for full-text search
     cursor.execute('''CREATE VIRTUAL TABLE IF NOT EXISTS news_fts USING fts5(
-<<<<<<< HEAD
-                        id, headline, summary, link)''')  # Include 'id' in the FTS table
-=======
                         id, headline, summary, link)''')
->>>>>>> b28af42 (Update backend and frontend URLs to point to the production server; adjust .gitignore and clean up commented code)
 
     # Trigger to keep the FTS5 table in sync with the news table
     cursor.execute('''CREATE TRIGGER IF NOT EXISTS news_ai AFTER INSERT ON news
@@ -86,18 +77,10 @@ app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "https://mai-newscraper.vercel.app/"}})
 
 # # Configure Flask-Limiter to use Redis
-<<<<<<< HEAD
-# redis_url = os.getenv("REDIS_URL", "redis://127.0.0.1:6379")
-# limiter = Limiter(
-#     get_remote_address,
-#     app=app,
-#     storage_uri=redis_url,  # Use Redis as the storage backend
-=======
 # limiter = Limiter(
 #     get_remote_address,
 #     app=app,
 #     storage_uri="redis://127.0.0.1:6379",  # Use Redis as the storage backend
->>>>>>> b28af42 (Update backend and frontend URLs to point to the production server; adjust .gitignore and clean up commented code)
 #     default_limits=["50 per 3 minutes"],
 # )
 
