@@ -74,7 +74,7 @@ setup_database()
 # Initialize the Flask application
 app = Flask(__name__)
 
-CORS(app, resources={r"/*": {"origins": "https://mai-newscraper.vercel.app/"}})
+CORS(app, resources={r"/*": {"origins": "https://mai-newscraper.vercel.app"}})
 
 # # Configure Flask-Limiter to use Redis
 # limiter = Limiter(
