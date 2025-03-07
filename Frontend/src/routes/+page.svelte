@@ -8,7 +8,7 @@
     import { message } from './components/store.ts';
 
     // Initialize verification state
-    let verification = false;
+    let verification = true;
 
     // Function to handle reCAPTCHA verification in parent
     function handleVerification(success) {
