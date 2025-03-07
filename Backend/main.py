@@ -50,6 +50,7 @@ def setup_database():
                         headline TEXT,
                         summary TEXT,
                         link TEXT)''')
+
     cursor.execute('''CREATE INDEX IF NOT EXISTS headline_idx ON news_fts USING gin (headline gin_trgm_ops)''')
     cursor.execute('''CREATE INDEX IF NOT EXISTS summary_idx ON news_fts USING gin (summary gin_trgm_ops)''')
 
