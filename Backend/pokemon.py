@@ -2,7 +2,7 @@ from flask import Blueprint, request, jsonify
 import requests
 import psycopg2
 import logging
-from config import Config  # Import the Config class
+from Backend.config import Config
 
 # Configure logging
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')

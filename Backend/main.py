@@ -6,11 +6,11 @@ from dotenv import load_dotenv
 from google.auth.transport.requests import Request
 from google.oauth2 import id_token
 from flask_cors import CORS
-from form import form_bp
-from pokemon import pokemon
+from Backend.form import form_bp
+from Backend.pokemon import pokemon
 import logging
 import requests
-from config import Config
+from Backend.config import Config
 
 # Load environment variables from .env file
 load_dotenv()
@@ -298,4 +298,4 @@ def handle_exception(e):
 
 if __name__ == '__main__':
     # Run the Flask app in debug mode on port 5000
-    app.run(debug=True, port=5000)
+    app.run(debug=True, port=8080)

@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 import psycopg2
-from config import Config  # Import the Config class
+from Backend.config import Config
 
 form_bp = Blueprint('form', __name__)
 
