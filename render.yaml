@@ -12,3 +12,4 @@ services:
         fromDatabase: GOOGLE_CLIENT_KEY
       - key: BACKEND_KEY
         fromDatabase: BACKEND_KEY
+    startCommand: gunicorn -w 4 -b 0.0.0.0:8080 Backend.main:app
