@@ -7,3 +7,4 @@ python-dotenv
 google-auth
 google-auth-oauthlib
 flask-cors
+psycopg2
