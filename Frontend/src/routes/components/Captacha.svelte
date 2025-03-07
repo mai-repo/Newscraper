@@ -11,17 +11,19 @@
             fetch('https://mai-newscraper.onrender.com/verifyUser', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
+                    'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ token }) // Send the reCAPTCHA token for verification
+                body: JSON.stringify({
+                    token: 'token'
+                })
             })
             .then(response => response.json())
             .then(data => {
-                console.log(data);
+                console.log('Success:', data);
                 onVerification(true);
             })
-            .catch(error => {
-                console.log(error);
+            .catch((error) => {
+                console.error('Error:', error);
             });
         } else {
             alert('Please complete the reCAPTCHA.');
