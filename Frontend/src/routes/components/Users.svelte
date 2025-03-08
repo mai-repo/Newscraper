@@ -29,7 +29,11 @@
         });
     }
     onMount(() => {
-    window.userSignIn = userSignIn;
+        window.google.accounts.id.initialize({
+            client_id: "188533997003-j4rjj645s98u01bcqcbvpe33dcaf3ukd.apps.googleusercontent.com",
+            callback: userSignIn,
+            auto_select: false,
+        });
     });
 </script>
 
@@ -41,7 +45,7 @@
     <div id="g_id_onload"
         data-client_id="188533997003-j4rjj645s98u01bcqcbvpe33dcaf3ukd.apps.googleusercontent.com"
         data-callback="userSignIn"
-        data-auto_prompt="true">
+        data-auto_prompt="false">
     </div>
 
     <!-- Google Sign-In button -->
