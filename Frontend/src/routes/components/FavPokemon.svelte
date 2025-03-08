@@ -2,12 +2,13 @@
     let pokemon = null;
     let image = '';
     import { onMount } from 'svelte';
+    import { API_BASE_URL } from '../../config.js';
 
 
     // Function to fetch favorite Pokemon data
     async function pokemonData(){
         try {
-            const response = await fetch('https://mai-newscraper.onrender.com/getPokemon');
+            const response = await fetch(`${API_BASE_URL}/getPokemon`);
             const data = await response.json();
 
             if (data){
@@ -23,7 +24,7 @@
     // Function to delete a Pokemon by id
     async function deletePokemon(id) {
         try {
-            const response = await fetch(`https://mai-newscraper.onrender.com/deletePokemon/${id}`, {
+            const response = await fetch(`${API_BASE_URL}/deletePokemon/${id}`, {
                 method: "DELETE",
             });
             if (response.ok) {
@@ -45,7 +46,7 @@
             image: image
         };
         try {
-            const response = await fetch('https://mai-newscraper.onrender.com/changeProfile', {
+            const response = await fetch(`${API_BASE_URL}/changeProfile`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json'

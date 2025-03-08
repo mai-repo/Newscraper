@@ -1,4 +1,6 @@
 <script>
+    import { API_BASE_URL } from '../../config.js';
+
     // Import the userData store from the store.ts file
     import {userData} from './store.ts'
 
@@ -15,7 +17,7 @@
     async function addFavorite() {
         try {
             // Send a POST request to the server to add the favorite
-            const response = await fetch(`https://mai-newscraper.onrender.com/addFavorites`, {
+            const response = await fetch(`${API_BASE_URL}/addFavorites`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

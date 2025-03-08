@@ -20,4 +20,4 @@ ENV FLASK_APP=Backend/main.py
 EXPOSE 8080
 
 # Run the application
-CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:8080", "Backend.main:app"]
+CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:9000", "Backend.main:app"]

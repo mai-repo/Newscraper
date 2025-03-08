@@ -25,7 +25,7 @@ app = Flask(__name__)
 # Load configuration settings
 app.config.from_object(Config)
 
-CORS(app, resources={r"/*": {"origins": "https://mai-newscraper.vercel.app"}})
+CORS(app, resources={r"/*": {"origins": ["http://localhost:5173", "https://mai-newscraper.vercel.app"]}})
 
 def get_db_connection():
     connection = psycopg2.connect(app.config["DATABASE_URL"])
@@ -299,4 +299,4 @@ def handle_exception(e):
 
 if __name__ == '__main__':
     # Run the Flask app in debug mode on port 5000
-    app.run(debug=True, port=8080)
+    app.run(debug=True, port=9000)

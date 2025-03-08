@@ -1,4 +1,5 @@
 <script>
+  import { API_BASE_URL } from "../../config.js";
     import AddFavorite from "./AddFavorite.svelte";
     import Chart from "./Chart.svelte";
     import { news } from "./store.ts";
@@ -10,15 +11,15 @@
     let summarySearchInput = '';
     let currentPage = 1;
     let totalPages = 1;
-    let perPage = 10; // Number of articles per page
-    let isAdvancedSearch = false; // Flag to toggle between basic and advanced search
-    let isAdvancedSearchVisible = false; // Flag to show/hide advanced search form
-    let showResults = false; // Flag to show/hide search results
+    let perPage = 10;
+    let isAdvancedSearch = false;
+    let isAdvancedSearchVisible = false;
+    let showResults = false;
 
     // Function to scrape news articles from the backend
     async function scrapeNews() {
         try {
-            const response = await fetch('https://mai-newscraper.onrender.com/scrape');
+            const response = await fetch(`${API_BASE_URL}/scrape`);
             const data = await response.json();
             news.set(data); // Update the news store with scraped data
         } catch (error) {
@@ -29,7 +30,7 @@
     // Function to fetch news articles from the backend with pagination
     async function fetchNews(page = 1) {
         try {
-            const response = await fetch(`https://mai-newscraper.onrender.com/news?page=${page}&per_page=${perPage}`);
+            const response = await fetch(`${API_BASE_URL}/news?page=${page}&per_page=${perPage}`);
             const data = await response.json();
             news.set(data.articles);
             currentPage = data.current_page;
