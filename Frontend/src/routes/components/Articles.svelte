@@ -13,6 +13,7 @@
     let perPage = 10; // Number of articles per page
     let isAdvancedSearch = false; // Flag to toggle between basic and advanced search
     let isAdvancedSearchVisible = false; // Flag to show/hide advanced search form
+    let showResults = false; // Flag to show/hide search results
 
     // Function to scrape news articles from the backend
     async function scrapeNews() {
@@ -46,6 +47,11 @@
         } else {
             basicSearch();
         }
+        // Clear the search input fields after performing the search
+        searchInput = '';
+        headlineSearchInput = '';
+        summarySearchInput = '';
+        showResults = true; // Show the search results
     }
 
     // Basic search that filters by headline only
@@ -141,27 +147,31 @@
         {/if}
     </div>
 
-    <!-- Display filtered articles -->
-    {#if $news.length > 0}
-        {#each $news as article (article.id)}
-            <div class="p-4 bg-white w-1/2 rounded-lg shadow-md mb-4">
-                <h1 class="mb-2 text-2xl text-blue-800">Headline: {article.headline}</h1>
-                <p class="mb-2">{article.summary}</p>
-                <a class="text-sm text-indigo-500" href="{article.link}" target="_blank">Read more</a>
-                <AddFavorite news_id={article.id}></AddFavorite>
-            </div>
-        {/each}
-    {:else}
-        <p>No articles found.</p>
+    <!-- Display filtered articles only if showResults is true -->
+    {#if showResults}
+        {#if $news.length > 0}
+            {#each $news as article (article.id)}
+                <div class="p-4 bg-white w-1/2 rounded-lg shadow-md mb-4">
+                    <h1 class="mb-2 text-2xl text-blue-800">Headline: {article.headline}</h1>
+                    <p class="mb-2">{article.summary}</p>
+                    <a class="text-sm text-indigo-500" href="{article.link}" target="_blank">Read more</a>
+                    <AddFavorite news_id={article.id}></AddFavorite>
+                </div>
+            {/each}
+        {:else}
+            <p>No articles found.</p>
+        {/if}
     {/if}
 
     <!-- Pagination Component -->
-    <Pagination {currentPage} {totalPages} on:previous={previousPage} on:next={nextPage} icon>
-        <svelte:fragment slot="prev">
-            <ChevronLeftOutline class="w-5 h-5" />
-        </svelte:fragment>
-        <svelte:fragment slot="next">
-            <ChevronRightOutline class="w-5 h-5" />
-        </svelte:fragment>
-    </Pagination>
+    {#if showResults}
+        <Pagination {currentPage} {totalPages} on:previous={previousPage} on:next={nextPage} icon>
+            <svelte:fragment slot="prev">
+                <ChevronLeftOutline class="w-5 h-5" />
+            </svelte:fragment>
+            <svelte:fragment slot="next">
+                <ChevronRightOutline class="w-5 h-5" />
+            </svelte:fragment>
+        </Pagination>
+    {/if}
 </main>
