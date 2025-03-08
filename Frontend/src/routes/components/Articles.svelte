@@ -47,6 +47,11 @@
         } else {
             basicSearch();
         }
+        searchInput = '';
+        headlineSearchInput = '';
+        summarySearchInput = '';
+        await tick();
+        showResults = true;
     }
 
     // Basic search that filters by headline only
@@ -55,11 +60,6 @@
             article.headline.toLowerCase().includes(searchInput.toLowerCase())
         );
         news.set(filteredNews);
-        // Clear the search input fields after performing the search
-        searchInput = '';
-        headlineSearchInput = '';
-        summarySearchInput = '';
-        showResults = true;
     }
 
     // Advanced search that filters by both headline and summary
@@ -70,11 +70,6 @@
                 article.summary.toLowerCase().includes(summarySearchInput.toLowerCase()))
             );
             news.set(filteredNews);
-            // Clear the search input fields after performing the search
-            searchInput = '';
-            headlineSearchInput = '';
-            summarySearchInput = '';
-            showResults = true;
         } catch (error) {
             console.error('Error performing advanced search:', error);
         }
