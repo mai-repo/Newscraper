@@ -1,4 +1,3 @@
-
 <script>
     // Import necessary modules and components
     import { Router, Route, navigate } from 'svelte-routing';
@@ -8,7 +7,7 @@
     import { message } from './components/store.ts';
 
     // Initialize verification state
-    let verification = true;
+    let verification = false;
 
     // Function to handle reCAPTCHA verification in parent
     function handleVerification(success) {

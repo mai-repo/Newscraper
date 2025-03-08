@@ -11,19 +11,17 @@
             fetch('https://mai-newscraper.onrender.com/verifyUser', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({
-                    token: 'token'
-                })
+                body: JSON.stringify({ token }) // Send the reCAPTCHA token for verification
             })
             .then(response => response.json())
             .then(data => {
-                console.log('Success:', data);
+                console.log(data);
                 onVerification(true);
             })
-            .catch((error) => {
-                console.error('Error:', error);
+            .catch(error => {
+                console.log(error);
             });
         } else {
             alert('Please complete the reCAPTCHA.');
@@ -34,7 +32,7 @@
 <section>
     <!-- Google reCAPTCHA widget -->
     <!-- Include Google reCAPTCHA API -->
-    <script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit" async defer></script>
-    <div class="mb-3 g-recaptcha" data-sitekey="6Le24-wqAAAAAI4lL6lz0kE-zg_5keKRI-nTyXwb"></div>
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <div class="mb-3 g-recaptcha" data-sitekey="6LeM28EqAAAAADi454gZP51XpzLYYyb7XVf21wQH"></div>
     <button class = "p-2 bg-blue-300 rounded-lg" type="submit" on:click={notARoboto}>Submit</button>
 </section>
