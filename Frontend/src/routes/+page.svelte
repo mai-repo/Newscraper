@@ -1,4 +1,3 @@
-
 <script>
     // Import necessary modules and components
     import { Router, Route, navigate } from 'svelte-routing';

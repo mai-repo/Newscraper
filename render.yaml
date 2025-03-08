@@ -1,0 +1,27 @@
+services:
+  - type: web
+    name: news-scraper
+    env: docker
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: FLASK_ENV
+        value: production
+      - key: FLASK_APP
+        value: Backend/main.py
+      - key: GOOGLE_CLIENT_KEY
+        value: GOOGLE_CLIENT_KEY
+      - key: BACKEND_KEY
+        fromDatabase: BACKEND_KEY
+      - key: DATABASE_URL
+        fromDatabase: DATABASE_URL
+      - key: DB_HOST
+        fromDatabase: DB_HOST
+      - key: DB_PORT
+        fromDatabase: DB_PORT
+      - key: DB_NAME
+        fromDatabase: DB_NAME
+      - key: DB_USER
+        fromDatabase: DB_USER
+      - key: DB_PASSWORD
+        fromDatabase: DB_PASSWORD
+    startCommand: gunicorn -w 4 -b 0.0.0.0:8080 Backend.main:app
