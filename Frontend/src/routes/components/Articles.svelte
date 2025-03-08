@@ -43,8 +43,11 @@
     async function performSearch() {
         if (isAdvancedSearch) {
             advancedSearch();
+            headlineSearchInput = '';
+            summarySearchInput = '';
         } else {
             basicSearch();
+            searchInput = '';
         }
     }
 
