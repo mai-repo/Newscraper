@@ -43,15 +43,10 @@
     // Function to perform a search based on the search term and search type (headline only or advanced)
     async function performSearch() {
         if (isAdvancedSearch) {
-            advancedSearch();
+            await advancedSearch();
         } else {
             basicSearch();
         }
-        // Clear the search input fields after performing the search
-        searchInput = '';
-        headlineSearchInput = '';
-        summarySearchInput = '';
-        showResults = true;
     }
 
     // Basic search that filters by headline only
@@ -60,6 +55,11 @@
             article.headline.toLowerCase().includes(searchInput.toLowerCase())
         );
         news.set(filteredNews);
+        // Clear the search input fields after performing the search
+        searchInput = '';
+        headlineSearchInput = '';
+        summarySearchInput = '';
+        showResults = true;
     }
 
     // Advanced search that filters by both headline and summary
@@ -70,6 +70,11 @@
                 article.summary.toLowerCase().includes(summarySearchInput.toLowerCase()))
             );
             news.set(filteredNews);
+            // Clear the search input fields after performing the search
+            searchInput = '';
+            headlineSearchInput = '';
+            summarySearchInput = '';
+            showResults = true;
         } catch (error) {
             console.error('Error performing advanced search:', error);
         }
