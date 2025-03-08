@@ -1,58 +1,68 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, send_from_directory
+# from flask_limiter import Limiter
+# from flask_limiter.util import get_remote_address
+# from redis import Redis
 from bs4 import BeautifulSoup
-import psycopg2
+import sqlite3
 import os
 from dotenv import load_dotenv
 from google.auth.transport.requests import Request
 from google.oauth2 import id_token
 from flask_cors import CORS
-from Backend.form import form_bp
-from Backend.pokemon import pokemon
+from form import form_bp
+from pokemon import pokemon
 import logging
 import requests
-from Backend.config import Config
 
 # Load environment variables from .env file
 load_dotenv()
+
+# Google key and environment variables
+GOOGLE_CLIENT_KEY = os.getenv("GOOGLE_CLIENT_KEY")
+RECAPTCHA_SECRET_KEY = os.getenv("BACKEND_KEY")
+auth_uri = "https://accounts.google.com/o/oauth2/auth"
+token_uri = "https://oauth2.googleapis.com/token"
+auth_provider_x509_cert_url = "https://www.googleapis.com/oauth2/v1/certs"
 
 # Configure logging
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
-# Initialize the Flask application
-app = Flask(__name__)
-
-# Load configuration settings
-app.config.from_object(Config)
-
-CORS(app, resources={r"/*": {"origins": ["http://localhost:5173", "https://mai-newscraper.vercel.app"]}})
-
-def get_db_connection():
-    connection = psycopg2.connect(app.config["DATABASE_URL"])
-    return connection
 
 # Function to initialize the database by creating the 'news' table if it doesn't exist
 def setup_database():
-    connection = get_db_connection()
+    # Connect to the SQLite database (or create it if it doesn't exist)
+    connection = sqlite3.connect('news.db')
     cursor = connection.cursor()
 
     # Create the table if it doesn't exist
     cursor.execute('''CREATE TABLE IF NOT EXISTS news (
-                        id SERIAL PRIMARY KEY,
+                        id INTEGER PRIMARY KEY AUTOINCREMENT,
                         headline TEXT NOT NULL,
                         summary TEXT NOT NULL,
                         link TEXT NOT NULL)''')
 
-    # Create the full-text search table (optional)
-    cursor.execute('''CREATE EXTENSION IF NOT EXISTS pg_trgm''')  # PostgreSQL text search extension
-    cursor.execute('''CREATE TABLE IF NOT EXISTS news_fts (
-                        id INT PRIMARY KEY,
-                        headline TEXT,
-                        summary TEXT,
-                        link TEXT)''')
+    # Create the FTS5 virtual table for full-text search
+    cursor.execute('''CREATE VIRTUAL TABLE IF NOT EXISTS news_fts USING fts5(
+                        id, headline, summary, link)''')
 
-    cursor.execute('''CREATE INDEX IF NOT EXISTS headline_idx ON news_fts USING gin (headline gin_trgm_ops)''')
-    cursor.execute('''CREATE INDEX IF NOT EXISTS summary_idx ON news_fts USING gin (summary gin_trgm_ops)''')
+    # Trigger to keep the FTS5 table in sync with the news table
+    cursor.execute('''CREATE TRIGGER IF NOT EXISTS news_ai AFTER INSERT ON news
+                      BEGIN
+                          INSERT INTO news_fts(rowid, id, headline, summary, link)
+                          VALUES (new.id, new.id, new.headline, new.summary, new.link);
+                      END;''')
+
+    cursor.execute('''CREATE TRIGGER IF NOT EXISTS news_ad AFTER DELETE ON news
+                      BEGIN
+                          DELETE FROM news_fts WHERE id = old.id;
+                      END;''')
+
+    cursor.execute('''CREATE TRIGGER IF NOT EXISTS news_au AFTER UPDATE ON news
+                      BEGIN
+                          UPDATE news_fts SET headline = new.headline, summary = new.summary, link = new.link
+                          WHERE id = old.id;
+                      END;''')
 
     connection.commit()
     connection.close()
@@ -60,13 +70,28 @@ def setup_database():
 # Call the function to initialize the database
 setup_database()
 
-# Register the Blueprints
+
+# Initialize the Flask application
+app = Flask(__name__)
+
+CORS(app, resources={r"/*": {"origins": "https://mai-newscraper.vercel.app"}})
+
+# # Configure Flask-Limiter to use Redis
+# limiter = Limiter(
+#     get_remote_address,
+#     app=app,
+#     storage_uri="redis://127.0.0.1:6379",  # Use Redis as the storage backend
+#     default_limits=["50 per 3 minutes"],
+# )
+
+# Register the Blueprint
 app.register_blueprint(form_bp)
 app.register_blueprint(pokemon)
 
 @app.route("/")  # Define the route for the root URL
 def index():
     return jsonify({'message': 'Welcome to the API!'})
+
 
 @app.route("/scrape")
 def scrape():
@@ -102,13 +127,13 @@ def scrape():
         summaries_text += [""] * (len(headlines_text) - len(summaries_text))
         links_text += [""] * (len(headlines_text) - len(links_text))
 
-        # Insert scraped data into PostgreSQL database
-        connection = get_db_connection()
+        # Insert scraped data into SQLite database
+        connection = sqlite3.connect('news.db')
         cursor = connection.cursor()
 
         # Insert headlines and descriptions into the news table
         for headline, summary, link in zip(headlines_text, summaries_text, links_text):
-            cursor.execute("INSERT INTO news (headline, summary, link) VALUES (%s, %s, %s)",
+            cursor.execute("INSERT INTO news (headline, summary, link) VALUES (?, ?, ?)",
                 (headline, summary, link))
 
         connection.commit()
@@ -135,8 +160,8 @@ def get_news():
         page = request.args.get('page', 1, type=int)
         per_page = request.args.get('per_page', 10, type=int)
 
-        # Connect to the PostgreSQL database
-        connection = get_db_connection()
+        # Connect to the SQLite database
+        connection = sqlite3.connect('news.db')
         cursor = connection.cursor()
 
         # Select all rows from the 'news' table
@@ -147,7 +172,7 @@ def get_news():
 
         # Fetch the paginated results
         start = (page - 1) * per_page
-        cursor.execute("SELECT * FROM news LIMIT %s OFFSET %s", (per_page, start))
+        cursor.execute("SELECT * FROM news LIMIT ? OFFSET ?", (per_page, start))
         articles = cursor.fetchall()
 
         # Close the connection to the database
@@ -171,12 +196,12 @@ def get_news():
 @app.route("/headlines")
 def get_headlines():
     """
-    Fetches all headlines from the 'news' table in the PostgreSQL database
+    Fetches all headlines from the 'news' table in the SQLite database
     that match the specified keywords and returns them as a JSON response.
     """
     try:
-        # Connect to the PostgreSQL database
-        connection = get_db_connection()
+        # Connect to the SQLite database
+        connection = sqlite3.connect('news.db')
         cursor = connection.cursor()
 
         # Define the keywords to filter headlines
@@ -201,7 +226,7 @@ def get_headlines():
         logging.error(f"Error occurred while fetching summaries: {e}")
         return render_template("error.html", error_message=f"Error occurred while fetching summaries: {e}"), 500
 
-# Complex search
+#complex search
 @app.route('/search', methods=['GET'])
 def search_articles():
     try:
@@ -209,13 +234,13 @@ def search_articles():
         headline_query = request.args.get('headline_query', '', type=str)
         summary_query = request.args.get('summary_query', '', type=str)
 
-        # Connect to the PostgreSQL database
-        connection = get_db_connection()
+        # Connect to the SQLite database
+        connection = sqlite3.connect('news.db')
         cursor = connection.cursor()
 
-        # Perform full-text search on the 'news' table for both headline and summary
-        cursor.execute('''SELECT id, headline, summary, link FROM news
-                          WHERE headline LIKE %s OR summary LIKE %s''', (f'%{headline_query}%', f'%{summary_query}%'))
+        # Perform full-text search on the 'news_fts' virtual table for both headline and summary
+        cursor.execute('''SELECT id, headline, summary, link FROM news_fts
+                          WHERE headline MATCH ? OR summary MATCH ?''', (headline_query, summary_query))
         articles = cursor.fetchall()
 
         # Close the connection to the database
@@ -235,7 +260,7 @@ def verify_user():
     try:
         data = request.get_json()  # Correctly get JSON data from the request
         token = data.get('token')
-        secret = app.config["BACKEND_KEY"]
+        secret = RECAPTCHA_SECRET_KEY
 
         # Send the POST request to Google's reCAPTCHA verification endpoint
         recaptcha_response = requests.post(
@@ -262,7 +287,7 @@ def userSignIn():
     if not token:
         return jsonify(message="No token provided"), 404
     try:
-        id_token.verify_oauth2_token(token, Request(), app.config["GOOGLE_CLIENT_KEY"]), 200
+        id_token.verify_oauth2_token(token, Request(), GOOGLE_CLIENT_KEY), 200
 
         return jsonify(message='Google Sign-In successful!'), 200
 
@@ -299,4 +324,4 @@ def handle_exception(e):
 
 if __name__ == '__main__':
     # Run the Flask app in debug mode on port 5000
-    app.run(debug=True, port=9000)
+    app.run(debug=True, port=5000)

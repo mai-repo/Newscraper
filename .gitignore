@@ -1,5 +1,4 @@
 .venv
-venv
 package-lock.json
 .env
 .DS_Store

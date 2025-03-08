@@ -1,5 +1,4 @@
 <script>
-    import { API_BASE_URL } from "../../config.js";
     import { favArticles } from "./store.ts";
     export let headline;
     let old_headline = headline; // Store the initial headline
@@ -12,7 +11,7 @@
 
         try {
             // Send a PUT request to update the headline
-            const response = await fetch(`${API_BASE_URL}/editHeadline`, {
+            const response = await fetch('https://mai-newscraper.onrender.com/editHeadline', {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json'

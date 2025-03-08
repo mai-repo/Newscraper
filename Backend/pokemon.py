@@ -1,8 +1,7 @@
 from flask import Blueprint, request, jsonify
 import requests
-import psycopg2
+import sqlite3
 import logging
-from Backend.config import Config
 
 # Configure logging
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -10,22 +9,17 @@ logger = logging.getLogger(__name__)
 
 pokemon = Blueprint('pokemon', __name__)
 
-def get_db_connection():
-    connection = psycopg2.connect(Config.DATABASE_URL)
-    return connection
-
-# Function to create the Pokemon table if it doesn't exist
+# Function to create the favorite article table if it doesn't exist
 def create_add_Pokemon():
-    connection = get_db_connection()
-    cursor = connection.cursor()
-    # Create the Pokemon table
-    cursor.execute('''CREATE TABLE IF NOT EXISTS pokemon (
-                        id SERIAL PRIMARY KEY,
-                        username TEXT NOT NULL,
-                        pokemonName TEXT NOT NULL,
-                        image TEXT NOT NULL)''')
-    connection.commit()
-    connection.close()
+    with sqlite3.connect('news.db') as connection:
+        cursor = connection.cursor()
+        # Create the favorite article table referencing news.id
+        cursor.execute('''CREATE TABLE IF NOT EXISTS pokemon (
+                            id INTEGER PRIMARY KEY AUTOINCREMENT,
+                            username TEXT NOT NULL,
+                            pokemonName TEXT NOT NULL,
+                            image TEXT NOT NULL)''')
+        connection.commit()
     logger.debug("Pokemon table created or already exists.")
 
 # Call the function to initialize the database
@@ -71,12 +65,11 @@ def save_Pokemon():
         logger.error("Missing data in save_Pokemon")
         return jsonify({"error": "Missing data"}), 400
 
-    connection = get_db_connection()
-    cursor = connection.cursor()
-    cursor.execute('''INSERT INTO pokemon (username, pokemonName, image)
-                      VALUES (%s, %s, %s)''', (username, pokemonName, image))
-    connection.commit()
-    connection.close()
+    with sqlite3.connect('news.db') as connection:
+        cursor = connection.cursor()
+        cursor.execute('''INSERT INTO pokemon (username, pokemonName, image)
+                            VALUES (?, ?, ?)''', (username, pokemonName, image))
+        connection.commit()
 
     logger.debug(f"Pokemon {pokemonName} saved successfully.")
     return jsonify({"message": "Pokemon saved successfully"}), 201
@@ -93,13 +86,12 @@ def update_Pokemon(id):
         logger.error("Missing data in update_Pokemon")
         return jsonify({"error": "Missing data"}), 400
 
-    connection = get_db_connection()
-    cursor = connection.cursor()
-    cursor.execute('''UPDATE pokemon
-                      SET username = %s, pokemonName = %s, image = %s
-                      WHERE id = %s''', (username, pokemonName, image, id))
-    connection.commit()
-    connection.close()
+    with sqlite3.connect('news.db') as connection:
+        cursor = connection.cursor()
+        cursor.execute('''UPDATE pokemon
+                            SET username = ?, pokemonName = ?, image = ?
+                            WHERE id = ?''', (username, pokemonName, image, id))
+        connection.commit()
 
     logger.debug(f"Pokemon with ID {id} updated successfully.")
     return jsonify({"message": "Pokemon updated successfully"}), 200
@@ -107,11 +99,10 @@ def update_Pokemon(id):
 # Route to delete a Pokemon from the database
 @pokemon.route('/deletePokemon/<int:id>', methods=["DELETE"])
 def delete_Pokemon(id):
-    connection = get_db_connection()
-    cursor = connection.cursor()
-    cursor.execute('DELETE FROM pokemon WHERE id = %s', (id,))
-    connection.commit()
-    connection.close()
+    with sqlite3.connect('news.db') as connection:
+        cursor = connection.cursor()
+        cursor.execute('DELETE FROM pokemon WHERE id = ?', (id,))
+        connection.commit()
 
     logger.debug(f"Pokemon with ID {id} deleted successfully.")
     return jsonify({"message": "Pokemon deleted successfully"}), 200
@@ -119,11 +110,10 @@ def delete_Pokemon(id):
 # Route to get all Pokemon from the database
 @pokemon.route('/getPokemon', methods=["GET"])
 def get_all_Pokemon():
-    connection = get_db_connection()
-    cursor = connection.cursor()
-    cursor.execute('SELECT * FROM pokemon')
-    rows = cursor.fetchall()
-    connection.close()
+    with sqlite3.connect('news.db') as connection:
+        cursor = connection.cursor()
+        cursor.execute('SELECT * FROM pokemon')
+        rows = cursor.fetchall()
 
     pokemons = []
     for row in rows:
@@ -148,23 +138,21 @@ def profile_photo():
     image = data.get('image')
     pokemon_id = data.get('pokemon_id')
 
-    connection = get_db_connection()
-    cursor = connection.cursor()
-    cursor.execute('SELECT * FROM pokemon WHERE id = %s', (pokemon_id,))
-    pokemon = cursor.fetchone()
+    with sqlite3.connect('news.db') as connection:
+        cursor = connection.cursor()
+        cursor.execute('SELECT * FROM pokemon WHERE id = ?', (pokemon_id,))
+        pokemon = cursor.fetchone()
 
-    if not pokemon:
-        logger.error("Pokemon not found in profile_photo")
-        connection.close()
-        return jsonify({"error": "Pokemon not found"}), 404
+        if not pokemon:
+            logger.error("Pokemon not found in profile_photo")
+            return jsonify({"error": "Pokemon not found"}), 404
 
-    cursor.execute('''
-        UPDATE pokemon
-        SET image = %s
-        WHERE id = %s
-    ''', (image, pokemon_id))
-    connection.commit()
-    connection.close()
+        cursor.execute('''
+            UPDATE pokemon
+            SET image = ?
+            WHERE id = ?
+        ''', (image, pokemon_id))
+        connection.commit()
 
     if cursor.rowcount == 0:
         logger.error("Pokemon not found in profile_photo update")

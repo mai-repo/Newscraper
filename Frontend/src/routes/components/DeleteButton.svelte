@@ -1,5 +1,4 @@
 <script>
-    import { API_BASE_URL } from '../../config.js';
     import { favArticles } from './store.ts'; // Import the favArticles store
     export let id;
 
@@ -7,7 +6,7 @@
     async function deleteArticle(id) {
         try {
             // Send a DELETE request to the server
-            const response = await fetch(`${API_BASE_URL}/deleteFavorite/${id}`, {
+            const response = await fetch(`https://mai-newscraper.onrender.com/deleteFavorite/${id}`, {
                 method: 'DELETE',
             });
 

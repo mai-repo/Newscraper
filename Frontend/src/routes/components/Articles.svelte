@@ -1,5 +1,4 @@
 <script>
-  import { API_BASE_URL } from "../../config.js";
     import AddFavorite from "./AddFavorite.svelte";
     import Chart from "./Chart.svelte";
     import { news } from "./store.ts";
@@ -11,15 +10,14 @@
     let summarySearchInput = '';
     let currentPage = 1;
     let totalPages = 1;
-    let perPage = 10;
-    let isAdvancedSearch = false;
-    let isAdvancedSearchVisible = false;
-    let showResults = false;
+    let perPage = 10; // Number of articles per page
+    let isAdvancedSearch = false; // Flag to toggle between basic and advanced search
+    let isAdvancedSearchVisible = false; // Flag to show/hide advanced search form
 
     // Function to scrape news articles from the backend
     async function scrapeNews() {
         try {
-            const response = await fetch(`${API_BASE_URL}/scrape`);
+            const response = await fetch('https://mai-newscraper.onrender.com/scrape');
             const data = await response.json();
             news.set(data); // Update the news store with scraped data
         } catch (error) {
@@ -30,7 +28,7 @@
     // Function to fetch news articles from the backend with pagination
     async function fetchNews(page = 1) {
         try {
-            const response = await fetch(`${API_BASE_URL}/news?page=${page}&per_page=${perPage}`);
+            const response = await fetch(`https://mai-newscraper.onrender.com/news?page=${page}&per_page=${perPage}`);
             const data = await response.json();
             news.set(data.articles);
             currentPage = data.current_page;
@@ -44,15 +42,10 @@
     // Function to perform a search based on the search term and search type (headline only or advanced)
     async function performSearch() {
         if (isAdvancedSearch) {
-            await advancedSearch();
+            advancedSearch();
         } else {
             basicSearch();
         }
-
-        // Clear inputs after performing search
-        searchInput = '';
-        headlineSearchInput = '';
-        summarySearchInput = '';
     }
 
     // Basic search that filters by headline only
@@ -61,7 +54,6 @@
             article.headline.toLowerCase().includes(searchInput.toLowerCase())
         );
         news.set(filteredNews);
-        showResults = true; // Show results after search
     }
 
     // Advanced search that filters by both headline and summary
@@ -72,7 +64,6 @@
                 article.summary.toLowerCase().includes(summarySearchInput.toLowerCase()))
             );
             news.set(filteredNews);
-            showResults = true; // Show results after search
         } catch (error) {
             console.error('Error performing advanced search:', error);
         }
@@ -150,31 +141,27 @@
         {/if}
     </div>
 
-    <!-- Display filtered articles only if showResults is true -->
-    {#if showResults}
-        {#if $news.length > 0}
-            {#each $news as article (article.id)}
-                <div class="p-4 bg-white w-1/2 rounded-lg shadow-md mb-4">
-                    <h1 class="mb-2 text-2xl text-blue-800">Headline: {article.headline}</h1>
-                    <p class="mb-2">{article.summary}</p>
-                    <a class="text-sm text-indigo-500" href="{article.link}" target="_blank">Read more</a>
-                    <AddFavorite news_id={article.id}></AddFavorite>
-                </div>
-            {/each}
-        {:else}
-            <p>No articles found.</p>
-        {/if}
+    <!-- Display filtered articles -->
+    {#if $news.length > 0}
+        {#each $news as article (article.id)}
+            <div class="p-4 bg-white w-1/2 rounded-lg shadow-md mb-4">
+                <h1 class="mb-2 text-2xl text-blue-800">Headline: {article.headline}</h1>
+                <p class="mb-2">{article.summary}</p>
+                <a class="text-sm text-indigo-500" href="{article.link}" target="_blank">Read more</a>
+                <AddFavorite news_id={article.id}></AddFavorite>
+            </div>
+        {/each}
+    {:else}
+        <p>No articles found.</p>
     {/if}
 
     <!-- Pagination Component -->
-    {#if showResults}
-        <Pagination {currentPage} {totalPages} on:previous={previousPage} on:next={nextPage} icon>
-            <svelte:fragment slot="prev">
-                <ChevronLeftOutline class="w-5 h-5" />
-            </svelte:fragment>
-            <svelte:fragment slot="next">
-                <ChevronRightOutline class="w-5 h-5" />
-            </svelte:fragment>
-        </Pagination>
-    {/if}
+    <Pagination {currentPage} {totalPages} on:previous={previousPage} on:next={nextPage} icon>
+        <svelte:fragment slot="prev">
+            <ChevronLeftOutline class="w-5 h-5" />
+        </svelte:fragment>
+        <svelte:fragment slot="next">
+            <ChevronRightOutline class="w-5 h-5" />
+        </svelte:fragment>
+    </Pagination>
 </main>

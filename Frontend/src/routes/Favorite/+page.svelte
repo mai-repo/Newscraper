@@ -5,7 +5,6 @@
     import { userData, favArticles } from '../components/store.ts';
     import UpdateHeadline from '../components/UpdateHeadline.svelte';
     import { HomeSolid } from 'flowbite-svelte-icons';
-    import { API_BASE_URL } from '../../config.js';
 
     $: userName = $userData.name;
 
@@ -14,7 +13,7 @@
     // Function to fetch favorite articles for the user
     async function getFav() {
         try {
-            const response = await fetch(`${API_BASE_URL}/favorites/${userName}`);
+            const response = await fetch(`https://mai-newscraper.onrender.com/favorites/${userName}`);
             const data = await response.json();
             favArticles.set(data.favorites); // Update the store with fetched favorite articles
             showPokemon = false; // Ensure articles are shown

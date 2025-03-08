@@ -1,7 +1,6 @@
 <script>
     import { onMount } from "svelte";
     import { Chart, CategoryScale, LinearScale, BarController, BarElement, Title, Tooltip, Legend } from "chart.js";
-    import { API_BASE_URL } from "../../config.js";
 
     let headlinesData = [];
     let chart = null;
@@ -11,7 +10,7 @@
 
     onMount(async () => {
         try {
-            const response = await fetch(`${API_BASE_URL}/headlines`);
+            const response = await fetch("https://mai-newscraper.onrender.com/headlines");
             const data = await response.json();
             console.log("Fetched Data:", data);  // Debugging statement
             headlinesData = data;
