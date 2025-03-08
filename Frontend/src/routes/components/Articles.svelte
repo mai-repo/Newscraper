@@ -51,7 +51,7 @@
         searchInput = '';
         headlineSearchInput = '';
         summarySearchInput = '';
-        showResults = true; // Show the search results
+        showResults = true;
     }
 
     // Basic search that filters by headline only
