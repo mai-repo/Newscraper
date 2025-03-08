@@ -3,6 +3,7 @@
     import {userData} from './store.ts';
     import {message} from './store.ts';
     import {jwtDecode} from 'jwt-decode';
+    import { API_BASE_URL } from '../../config.js';
 
     // Function for handling user sign-in with Google Identity Services
     async function userSignIn(response) {
@@ -10,7 +11,7 @@
         const token = response.credential;
         const decoded = jwtDecode(token); // Decode JWT
 
-        fetch('https://mai-newscraper.onrender.com/userSignIn', {
+        fetch(`${API_BASE_URL}/userSignIn`, {
             method: 'POST',
             headers: {
                 "Content-Type": "application/json",
@@ -29,7 +30,11 @@
         });
     }
     onMount(() => {
-    window.userSignIn = userSignIn;
+        window.google.accounts.id.initialize({
+            client_id: "188533997003-j4rjj645s98u01bcqcbvpe33dcaf3ukd.apps.googleusercontent.com",
+            callback: userSignIn,
+            auto_select: false,
+        });
     });
 </script>
 
