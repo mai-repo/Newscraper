@@ -42,15 +42,15 @@
 
     // Function to perform a search based on the search term and search type (headline only or advanced)
     async function performSearch() {
+        searchInput = '';
+        headlineSearchInput = '';
+        summarySearchInput = '';
+
         if (isAdvancedSearch) {
             await advancedSearch();
         } else {
             basicSearch();
         }
-        searchInput = '';
-        headlineSearchInput = '';
-        summarySearchInput = '';
-        await tick();
         showResults = true;
     }
 
