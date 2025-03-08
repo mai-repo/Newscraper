@@ -34,7 +34,7 @@
 <section>
     <!-- Google reCAPTCHA widget -->
     <!-- Include Google reCAPTCHA API -->
-    <script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit" async defer></script>
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     <div class="mb-3 g-recaptcha" data-sitekey="6Le24-wqAAAAAI4lL6lz0kE-zg_5keKRI-nTyXwb"></div>
     <button class = "p-2 bg-blue-300 rounded-lg" type="submit" on:click={notARoboto}>Submit</button>
 </section>
