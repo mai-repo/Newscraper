@@ -28,6 +28,11 @@ app = Flask(__name__)
 app.config.from_object(Config)
 
 CORS(app, resources={r"/*": {"origins": ["https://mai-newscraper.vercel.app", "http://localhost:5173"]}})
+
+def get_db_connection():
+    connection = psycopg2.connect(app.config["DATABASE_URL"])
+    return connection
+
 def setup_database():
     connection = get_db_connection()
     cursor = connection.cursor()
