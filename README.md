@@ -37,6 +37,7 @@ This **Flask**-based application scrapes the latest news headlines and descripti
       - [1. In the Frontend create `.env.local` and `.env.production`](#1-in-the-frontend-create-envlocal-and-envproduction)
     - [13. Deploy on Render](#13-deploy-on-render)
     - [14. Deploy on Vercel](#14-deploy-on-vercel)
+    - [15. Database on Render](#15-database-on-render)
     - [Advanced Search](#advanced-search)
       - [How to Use Advanced Search](#how-to-use-advanced-search)
   - [Stretch Goals](#stretch-goals)
@@ -327,22 +328,6 @@ Create `.env.production` for production:
 VITE_API_BASE_URL=https://your-production-url.com
 ```
 
-### 13. Deploy on Render
-
-Follow these steps to deploy your application on Render:
-
-1. Create a new web service on Render.
-2. Connect your GitHub repository.
-3. Set the build and start commands:
-   - **Build Command**: `pip install -r Backend/requirements.txt`
-   - **Start Command**: `gunicorn -w 4 -b 0.0.0.0:8080 Backend.main:app`
-4. Add environment variables in the Render dashboard:
-   - `GOOGLE_CLIENT_SECRET=your-google-client-secret`
-   - `RECAPTCHA_SECRET_KEY=your-recaptcha-secret-key`
-   - `DATABASE_URL=your-database-key`
-
-5. Deploy the application.
-
 ### 13. Deploy on Render 
 
 Follow these steps to deploy your application on Render:
@@ -358,7 +343,17 @@ Follow these steps to deploy your application on Render:
   - `DATABASE_URL=your-database-key`
 5. Deploy the application.
 
-### 14. Database on Render
+### 14. Deploy on Vercel
+
+Follow these steps to deploy your frontend application on Vercel:
+
+1. Log in to your Vercel account.
+2. Connect your GitHub repository to Vercel.
+3. Set the environment variables in the Vercel dashboard:
+  - `VITE_API_BASE_URL=https://your-backend-url.com`
+4. Deploy the application.
+
+### 15. Database on Render
 
 To set up the database on Render:
 
