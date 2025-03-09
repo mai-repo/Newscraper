@@ -37,7 +37,6 @@ This **Flask**-based application scrapes the latest news headlines and descripti
       - [1. In the Frontend create `.env.local` and `.env.production`](#1-in-the-frontend-create-envlocal-and-envproduction)
     - [13. Deploy on Render](#13-deploy-on-render)
     - [14. Deploy on Vercel](#14-deploy-on-vercel)
-    - [15. Database on Render](#15-database-on-render)
     - [Advanced Search](#advanced-search)
       - [How to Use Advanced Search](#how-to-use-advanced-search)
   - [Stretch Goals](#stretch-goals)
@@ -255,7 +254,7 @@ This will generate a coverage report in the `htmlcov` directory. You can view th
 open htmlcov/index.html
 ```
 
-### 11.Deployment 
+### 11. Deployment 
 
 #### 1. Create a Dockerfile
 
@@ -358,19 +357,8 @@ Follow these steps to deploy your application on Render:
   - `RECAPTCHA_SECRET_KEY=your-recaptcha-secret-key`
   - `DATABASE_URL=your-database-key`
 5. Deploy the application.
-  
-### 14. Deploy on Vercel
 
-Follow these steps to deploy your frontend application on Vercel:
-
-1. Log in to your Vercel account.
-2. Connect your GitHub repository to Vercel.
-3. Set the environment variables in the Vercel dashboard:
-  - `VITE_API_BASE_URL=https://your-backend-url.com`
-4. Deploy the application.
-
-
-### 15. Database on Render
+### 14. Database on Render
 
 To set up the database on Render:
 
