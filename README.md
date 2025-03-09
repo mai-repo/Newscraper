@@ -123,7 +123,7 @@ DATABASE_URL=your-render-database
 ### 6. Data Schema
 
 #### News Data Schema
-![News Data Schema](https://github.com/user-attachments/assets/e3b420e0-ff5e-4a5d-a4c5-25208361f929)
+![News](https://github.com/user-attachments/assets/0e849a88-29b9-451c-8687-b562def9ccbc)
 
 The news data is stored in an SQLite database with the following schema:
 
@@ -136,7 +136,8 @@ CREATE TABLE IF NOT EXISTS news (
 );
 ```
 #### Pokémon Data Schema
-![Pokémon Data Schema](https://github.com/user-attachments/assets/5c0f49d2-d233-472a-92f1-ac0b74d4c979)
+![Pokemon](https://github.com/user-attachments/assets/d62e113d-b918-45ca-a037-ea6f82fc7f58)
+
 The Pokémon data is stored in an SQLite database with the following schema:
 
 ```sql
@@ -148,7 +149,8 @@ CREATE TABLE IF NOT EXISTS pokemon (
 );
 ```
 #### Favorite Articles Data Schema
-![Favorite Articles Data Schema](https://github.com/user-attachments/assets/8af9bd20-2966-42eb-a046-80e13690077d)
+![FavArt](https://github.com/user-attachments/assets/17d05666-18b5-4418-b960-25b08b58ffa7)
+
 The favorite articles data is stored in an SQLite database with the following schema:
 
 ```sql
@@ -161,12 +163,12 @@ CREATE TABLE IF NOT EXISTS favArt (
 ```
 
 #### Virtual Table for Full-Text Search
-![Virtual Table](https://github.com/user-attachments/assets/fcc4f364-d6eb-4556-affc-539593c85a8b)
+![News_fts](https://github.com/user-attachments/assets/75281a1b-2eea-4f71-b11b-4611350248a1)
 
-The virtual table for full-text search is created using the following schema:
+The  table for full-text search is created using the following schema:
 
 ```sql
-CREATE VIRTUAL TABLE IF NOT EXISTS news_fts USING fts5(
+CREATE TABLE IF NOT EXISTS news_fts USING fts5(
     id,
     headline,
     summary,
