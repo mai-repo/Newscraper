@@ -30,9 +30,18 @@ This **Flask**-based application scrapes the latest news headlines and descripti
     - [10. Testing Instructions](#10-testing-instructions)
       - [1. Set Up the Testing Environment](#1-set-up-the-testing-environment)
       - [2. View Test Coverage Report](#2-view-test-coverage-report)
+    - [11. Deployment](#11-deployment)
+      - [1. Create a Dockerfile](#1-create-a-dockerfile)
+      - [2. Create a Render YAML File](#2-create-a-render-yaml-file)
+    - [12. Environment Configuration](#12-environment-configuration)
+      - [1. In the Frontend create `.env.local` and `.env.production`](#1-in-the-frontend-create-envlocal-and-envproduction)
+    - [13. Deploy on Render](#13-deploy-on-render)
+    - [14. Deploy on Vercel](#14-deploy-on-vercel)
+    - [15. Database on Render](#15-database-on-render)
     - [Advanced Search](#advanced-search)
       - [How to Use Advanced Search](#how-to-use-advanced-search)
   - [Stretch Goals](#stretch-goals)
+  - [Learning Experience](#learning-experience)
 
 ## Requirements
 
@@ -108,6 +117,7 @@ Follow the instructions to set up Google applications and obtain the necessary k
 ```env
 GOOGLE_CLIENT_SECRET=your-google-client-secret
 RECAPTCHA_SECRET_KEY=your-recaptcha-secret-key
+DATABASE_URL=your-render-database
 ```
 
 ### 6. Data Schema
@@ -131,7 +141,7 @@ The Pokémon data is stored in an SQLite database with the following schema:
 
 ```sql
 CREATE TABLE IF NOT EXISTS pokemon (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    id SERIAL PRIMARY KEY AUTOINCREMENT,
     username TEXT NOT NULL,
     pokemonName TEXT NOT NULL,
     image TEXT NOT NULL
@@ -143,9 +153,9 @@ The favorite articles data is stored in an SQLite database with the following sc
 
 ```sql
 CREATE TABLE IF NOT EXISTS favArt (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    id SERIAL PRIMARY KEY AUTOINCREMENT,
     username TEXT NOT NULL,
-    news_id INTEGER NOT NULL,
+    news_id INT NOT NULL,
     FOREIGN KEY (news_id) REFERENCES news(id) ON DELETE CASCADE
 );
 ```
@@ -184,6 +194,22 @@ npm install
 export FLASK_APP=Backend.main
 flask run
 ```
+
+### 8.1 Run the Frontend Application
+
+Navigate to the frontend directory:
+
+```bash
+cd Frontend
+```
+
+Start the development server:
+
+```bash
+npm run dev
+```
+
+This will start the frontend application, and you can access it in your web browser at `http://localhost:9000`.
 
 ### 9. Open Your Web Browser
 ![A webpage with a webscraper that asks user to click a button to scrape data from the Atlantic and returns a JSON file with the latest headlines](https://i.imgflip.com/9iamed.gif)
@@ -226,6 +252,133 @@ This will generate a coverage report in the `htmlcov` directory. You can view th
 ```bash
 open htmlcov/index.html
 ```
+
+### 11.Deployment 
+
+#### 1. Create a Dockerfile
+
+Create a `Dockerfile` in the root directory of your project:
+```markdown
+> **Note:** The following `Dockerfile` is a template. You may need to adjust it according to your specific project requirements.
+
+```dockerfile
+# Use the official Python image from the Docker Hub
+FROM python:3.9-slim
+
+# Set the working directory
+WORKDIR /app
+
+# Copy the requirements file into the container
+COPY requirements.txt .
+
+# Install the dependencies
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy the rest of the application code into the container
+COPY . .
+
+# Set environment variables
+ENV FLASK_APP=Backend.main
+
+# Expose the port the app runs on
+EXPOSE 5000
+
+# Run the application
+CMD ["flask", "run", "--host=0.0.0.0"]
+```
+
+#### 2. Create a Render YAML File
+
+Create a `render.yaml` file in the root directory of your project to define the Render service configuration this is a template that comes with the repo:
+
+```yaml
+services:
+  - type: web
+    name: news-scraper
+    env: docker
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: FLASK_ENV
+        value: production
+      - key: FLASK_APP
+        value: Backend/main.py
+      - key: GOOGLE_CLIENT_KEY
+        value: GOOGLE_CLIENT_KEY
+      - key: BACKEND_KEY
+        fromDatabase: BACKEND_KEY
+      - key: DATABASE_URL
+        fromDatabase: DATABASE_URL
+    startCommand: gunicorn -w 4 -b 0.0.0.0:8080 Backend.main:app
+```
+
+### 12. Environment Configuration
+
+#### 1. In the Frontend create `.env.local` and `.env.production`
+
+Create `.env.local` for local development:
+```env
+VITE_API_BASE_URL=https://your-loca-url.com
+```
+
+Create `.env.production` for production:
+
+```env
+VITE_API_BASE_URL=https://your-production-url.com
+```
+
+### 13. Deploy on Render
+
+Follow these steps to deploy your application on Render:
+
+1. Create a new web service on Render.
+2. Connect your GitHub repository.
+3. Set the build and start commands:
+   - **Build Command**: `pip install -r Backend/requirements.txt`
+   - **Start Command**: `gunicorn -w 4 -b 0.0.0.0:8080 Backend.main:app`
+4. Add environment variables in the Render dashboard:
+   - `GOOGLE_CLIENT_SECRET=your-google-client-secret`
+   - `RECAPTCHA_SECRET_KEY=your-recaptcha-secret-key`
+   - `DATABASE_URL=your-database-key`
+
+5. Deploy the application.
+
+### 13. Deploy on Render 
+
+Follow these steps to deploy your application on Render:
+
+1. Create a new web service on Render.
+2. Connect your GitHub repository.
+3. Set the build and start commands:
+  - **Build Command**: `pip install -r Backend/requirements.txt`
+  - **Start Command**: `gunicorn -w 4 -b 0.0.0.0:8080 Backend.main:app`
+4. Add environment variables in the Render dashboard:
+  - `GOOGLE_CLIENT_SECRET=your-google-client-secret`
+  - `RECAPTCHA_SECRET_KEY=your-recaptcha-secret-key`
+  - `DATABASE_URL=your-database-key`
+5. Deploy the application.
+  
+### 14. Deploy on Vercel
+
+Follow these steps to deploy your frontend application on Vercel:
+
+1. Log in to your Vercel account.
+2. Connect your GitHub repository to Vercel.
+3. Set the environment variables in the Vercel dashboard:
+  - `VITE_API_BASE_URL=https://your-backend-url.com`
+4. Deploy the application.
+
+
+### 15. Database on Render
+
+To set up the database on Render:
+
+1. Create a new PostgreSQL database on Render.
+2. Note the database URL provided by Render.
+3. Add the database URL to your environment variables in the Render dashboard:
+  - `DATABASE_URL=your-database-url`
+4. Update your application to use the Render database URL for database connections.
+
+
 ### Advanced Search
 The advanced search feature allows users to search for news articles based on specific keywords. This feature enhances the user experience by providing more relevant search results.
 
@@ -236,5 +389,9 @@ The advanced search feature allows users to search for news articles based on sp
 
 **Example**
 - If you want to search for articles related to "economy" or "Trump", enter "economy"  and "trump" in the search bar and press enter. The application will display all articles that contain the keyword "economy".
+
 ## Stretch Goals
 - Allow users to choose from a variety of news sites
+
+## Learning Experience
+Building this News Scraper Application was a challenging yet rewarding experience that taught me how to build a full-stack application from scratch, integrating both backend and frontend technologies. I learned how to develop a full-stack application using Flask for the backend and Svelte for the frontend, and how to implement web scraping using BeautifulSoup to fetch news data. Deploying the application on Render and Vercel required careful configuration and taught me how to manage deployment pipelines and ensure the application runs smoothly in a production environment.
