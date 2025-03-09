@@ -58,33 +58,6 @@ def setup_database():
     cursor.execute('''CREATE INDEX IF NOT EXISTS headline_idx ON news_fts USING gin (headline gin_trgm_ops)''')
     cursor.execute('''CREATE INDEX IF NOT EXISTS summary_idx ON news_fts USING gin (summary gin_trgm_ops)''')
 
-    # Create or replace function for syncing tables
-    cursor.execute('''
-        CREATE OR REPLACE FUNCTION sync_news_fts()
-        RETURNS TRIGGER AS $$
-        BEGIN
-            IF TG_OP = 'INSERT' THEN
-                INSERT INTO news_fts (id, headline, summary, link)
-                VALUES (NEW.id, NEW.headline, NEW.summary, NEW.link);
-            ELSIF TG_OP = 'UPDATE' THEN
-                UPDATE news_fts
-                SET headline = NEW.headline, summary = NEW.summary, link = NEW.link
-                WHERE id = NEW.id;
-            ELSIF TG_OP = 'DELETE' THEN
-                DELETE FROM news_fts WHERE id = OLD.id;
-            END IF;
-            RETURN NULL;
-        END;
-        $$ LANGUAGE plpgsql;
-    ''')
-
-    # Create trigger to keep news_fts in sync
-    cursor.execute('''
-        CREATE TRIGGER trigger_sync_news_fts
-        AFTER INSERT OR UPDATE OR DELETE ON news
-        FOR EACH ROW EXECUTE FUNCTION sync_news_fts();
-    ''')
-
     connection.commit()
     connection.close()
 
