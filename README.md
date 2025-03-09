@@ -125,7 +125,7 @@ DATABASE_URL=your-render-database
 #### News Data Schema
 ![News](https://github.com/user-attachments/assets/0e849a88-29b9-451c-8687-b562def9ccbc)
 
-The news data is stored in an SQLite database with the following schema:
+The news data is stored in an PostgreSQL database with the following schema:
 
 ```sql
 CREATE TABLE IF NOT EXISTS news (
@@ -138,7 +138,7 @@ CREATE TABLE IF NOT EXISTS news (
 #### Pokémon Data Schema
 ![Pokemon](https://github.com/user-attachments/assets/d62e113d-b918-45ca-a037-ea6f82fc7f58)
 
-The Pokémon data is stored in an SQLite database with the following schema:
+The Pokémon data is stored in an PostgreSQL database with the following schema:
 
 ```sql
 CREATE TABLE IF NOT EXISTS pokemon (
@@ -151,7 +151,7 @@ CREATE TABLE IF NOT EXISTS pokemon (
 #### Favorite Articles Data Schema
 ![FavArt](https://github.com/user-attachments/assets/17d05666-18b5-4418-b960-25b08b58ffa7)
 
-The favorite articles data is stored in an SQLite database with the following schema:
+The favorite articles data is stored in a PostgreSQL database with the following schema:
 
 ```sql
 CREATE TABLE IF NOT EXISTS favArt (
