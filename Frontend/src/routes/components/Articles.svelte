@@ -1,4 +1,5 @@
 <script>
+    import { API_BASE_URL } from "../../config.js";
     import AddFavorite from "./AddFavorite.svelte";
     import Chart from "./Chart.svelte";
     import { news } from "./store.ts";
@@ -17,7 +18,7 @@
     // Function to scrape news articles from the backend
     async function scrapeNews() {
         try {
-            const response = await fetch('https://mai-newscraper.onrender.com/scrape');
+            const response = await fetch(`${API_BASE_URL}/scrape`);
             const data = await response.json();
             news.set(data); // Update the news store with scraped data
         } catch (error) {
@@ -28,7 +29,7 @@
     // Function to fetch news articles from the backend with pagination
     async function fetchNews(page = 1) {
         try {
-            const response = await fetch(`https://mai-newscraper.onrender.com/news?page=${page}&per_page=${perPage}`);
+            const response = await fetch(`${API_BASE_URL}/news?page=${page}&per_page=${perPage}`);
             const data = await response.json();
             news.set(data.articles);
             currentPage = data.current_page;

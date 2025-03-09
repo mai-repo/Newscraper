@@ -1,4 +1,5 @@
 <script>
+    import { API_BASE_URL } from '../../config.js';
     import { userData, pokemonData} from './store.ts';
     import { get } from 'svelte/store';
 
@@ -13,7 +14,7 @@
     async function fetchPokemon(name) {
         try {
             // Make the GET request with the Pokémon name
-            const response = await fetch(`https://mai-newscraper.onrender.com/catchEm?name=${name}`);
+            const response = await fetch(`${API_BASE_URL}/catchEm?name=${name}`);
             const data = await response.json();
 
             // If data is received successfully, set it to the pokemon variable
@@ -35,7 +36,7 @@
 
         try {
             // Make the POST request to save the Pokémon data
-            const response = await fetch(`https://mai-newscraper.onrender.com/savePokemon`, {
+            const response = await fetch(`${API_BASE_URL}/savePokemon`, {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json',
