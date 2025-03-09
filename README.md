@@ -129,7 +129,7 @@ The news data is stored in an SQLite database with the following schema:
 
 ```sql
 CREATE TABLE IF NOT EXISTS news (
-    id SERIAL PRIMARY KEY AUTOINCREMENT,
+    id SERIAL PRIMARY,
     headline TEXT NOT NULL,
     summary TEXT NOT NULL,
     link TEXT NOT NULL
@@ -142,7 +142,7 @@ The Pokémon data is stored in an SQLite database with the following schema:
 
 ```sql
 CREATE TABLE IF NOT EXISTS pokemon (
-    id SERIAL PRIMARY KEY AUTOINCREMENT,
+    id SERIAL PRIMARY,
     username TEXT NOT NULL,
     pokemonName TEXT NOT NULL,
     image TEXT NOT NULL
@@ -155,24 +155,24 @@ The favorite articles data is stored in an SQLite database with the following sc
 
 ```sql
 CREATE TABLE IF NOT EXISTS favArt (
-    id SERIAL PRIMARY KEY AUTOINCREMENT,
+    id SERIAL PRIMARY KEY,
     username TEXT NOT NULL,
     news_id INT NOT NULL,
     FOREIGN KEY (news_id) REFERENCES news(id) ON DELETE CASCADE
 );
 ```
 
-#### Virtual Table for Full-Text Search
+#### Table for Full-Text Search
 ![News_fts](https://github.com/user-attachments/assets/75281a1b-2eea-4f71-b11b-4611350248a1)
 
 The  table for full-text search is created using the following schema:
 
 ```sql
-CREATE TABLE IF NOT EXISTS news_fts USING fts5(
-    id,
-    headline,
-    summary,
-    link
+CREATE TABLE IF NOT EXISTS news_fts (
+      id INT PRIMARY KEY,
+      headline TEXT,
+      summary TEXT,
+      link TEXT
 );
 ```
 
