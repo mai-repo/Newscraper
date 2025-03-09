@@ -1,4 +1,6 @@
 from flask import Flask, render_template, request, jsonify
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 from bs4 import BeautifulSoup
 import psycopg2
 import os
@@ -25,7 +27,7 @@ app = Flask(__name__)
 # Load configuration settings
 app.config.from_object(Config)
 
-CORS(app, resources={r"/*": {"origins": "https://mai-newscraper.vercel.app"}})
+CORS(app, resources={r"/*": {"origins": ["https://mai-newscraper.vercel.app", "http://localhost:5173"]}})
 
 def get_db_connection():
     connection = psycopg2.connect(app.config["DATABASE_URL"])
@@ -59,6 +61,14 @@ def setup_database():
 
 # Call the function to initialize the database
 setup_database()
+
+# Configure Flask-Limiter to use Redis
+limiter = Limiter(
+    get_remote_address,
+    app=app,
+    storage_uri="memory://",
+    default_limits=["50 per 3 minutes"],
+)
 
 # Register the Blueprints
 app.register_blueprint(form_bp)

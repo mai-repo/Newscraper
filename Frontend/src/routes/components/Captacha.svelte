@@ -1,4 +1,5 @@
 <script>
+    import { API_BASE_URL } from "../../config.js";
     export let onVerification;
 
     // Function to handle reCAPTCHA verification
@@ -8,7 +9,7 @@
 
         if (token) {
             // Send the token to the backend for verification
-            fetch('https://mai-newscraper.onrender.com/verifyUser', {
+            fetch(`${API_BASE_URL}/verifyUser`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

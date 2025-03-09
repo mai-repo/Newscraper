@@ -157,7 +157,7 @@ The virtual table for full-text search is created using the following schema:
 
 ```sql
 CREATE VIRTUAL TABLE IF NOT EXISTS news_fts USING fts5(
-    id, 
+    id,
     headline,
     summary,
     link
@@ -181,7 +181,7 @@ npm install
 ### 8. Run the Flask Application
 
 ```bash
-export FLASK_APP=main.py
+export FLASK_APP=Backend.main
 flask run
 ```
 

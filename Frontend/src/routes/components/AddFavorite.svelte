@@ -1,11 +1,8 @@
 <script>
-    // Import the userData store from the store.ts file
+    import { API_BASE_URL } from '../../config.js';
     import {userData} from './store.ts'
 
-    // Declare a prop for the news_id
     export let news_id
-
-    // Declare a variable for the username
     let username
 
     // Reactive statement to update the username whenever userData changes
@@ -15,7 +12,7 @@
     async function addFavorite() {
         try {
             // Send a POST request to the server to add the favorite
-            const response = await fetch(`https://mai-newscraper.onrender.com/addFavorites`, {
+            const response = await fetch(`${API_BASE_URL}/addFavorites`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
