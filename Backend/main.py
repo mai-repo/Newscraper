@@ -28,33 +28,57 @@ app = Flask(__name__)
 app.config.from_object(Config)
 
 CORS(app, resources={r"/*": {"origins": ["https://mai-newscraper.vercel.app", "http://localhost:5173"]}})
-
-def get_db_connection():
-    connection = psycopg2.connect(app.config["DATABASE_URL"])
-    return connection
-
-# Function to initialize the database by creating the 'news' table if it doesn't exist
 def setup_database():
     connection = get_db_connection()
     cursor = connection.cursor()
 
-    # Create the table if it doesn't exist
+    # Create the 'news' table
     cursor.execute('''CREATE TABLE IF NOT EXISTS news (
                         id SERIAL PRIMARY KEY,
                         headline TEXT NOT NULL,
                         summary TEXT NOT NULL,
                         link TEXT NOT NULL)''')
 
-    # Create the full-text search table (optional)
-    cursor.execute('''CREATE EXTENSION IF NOT EXISTS pg_trgm''')  # PostgreSQL text search extension
+    # Enable the pg_trgm extension
+    cursor.execute('''CREATE EXTENSION IF NOT EXISTS pg_trgm''')
+
+    # Create the 'news_fts' table
     cursor.execute('''CREATE TABLE IF NOT EXISTS news_fts (
                         id INT PRIMARY KEY,
                         headline TEXT,
                         summary TEXT,
                         link TEXT)''')
 
+    # Create indexes for full-text search
     cursor.execute('''CREATE INDEX IF NOT EXISTS headline_idx ON news_fts USING gin (headline gin_trgm_ops)''')
     cursor.execute('''CREATE INDEX IF NOT EXISTS summary_idx ON news_fts USING gin (summary gin_trgm_ops)''')
+
+    # Create or replace function for syncing tables
+    cursor.execute('''
+        CREATE OR REPLACE FUNCTION sync_news_fts()
+        RETURNS TRIGGER AS $$
+        BEGIN
+            IF TG_OP = 'INSERT' THEN
+                INSERT INTO news_fts (id, headline, summary, link)
+                VALUES (NEW.id, NEW.headline, NEW.summary, NEW.link);
+            ELSIF TG_OP = 'UPDATE' THEN
+                UPDATE news_fts
+                SET headline = NEW.headline, summary = NEW.summary, link = NEW.link
+                WHERE id = NEW.id;
+            ELSIF TG_OP = 'DELETE' THEN
+                DELETE FROM news_fts WHERE id = OLD.id;
+            END IF;
+            RETURN NULL;
+        END;
+        $$ LANGUAGE plpgsql;
+    ''')
+
+    # Create trigger to keep news_fts in sync
+    cursor.execute('''
+        CREATE TRIGGER trigger_sync_news_fts
+        AFTER INSERT OR UPDATE OR DELETE ON news
+        FOR EACH ROW EXECUTE FUNCTION sync_news_fts();
+    ''')
 
     connection.commit()
     connection.close()
@@ -223,8 +247,8 @@ def search_articles():
         connection = get_db_connection()
         cursor = connection.cursor()
 
-        # Perform full-text search on the 'news' table for both headline and summary
-        cursor.execute('''SELECT id, headline, summary, link FROM news
+        # Perform full-text search on the 'news_fts' table for both headline and summary
+        cursor.execute('''SELECT id, headline, summary, link FROM news_fts
                           WHERE headline LIKE %s OR summary LIKE %s''', (f'%{headline_query}%', f'%{summary_query}%'))
         articles = cursor.fetchall()
 
