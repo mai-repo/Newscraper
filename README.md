@@ -129,7 +129,7 @@ The news data is stored in an SQLite database with the following schema:
 
 ```sql
 CREATE TABLE IF NOT EXISTS news (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    id SERIAL PRIMARY KEY AUTOINCREMENT,
     headline TEXT NOT NULL,
     summary TEXT NOT NULL,
     link TEXT NOT NULL
