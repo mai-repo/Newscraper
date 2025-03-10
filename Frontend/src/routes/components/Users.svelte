@@ -2,14 +2,14 @@
     import { onMount } from 'svelte'; // Import onMount for lifecycle hook
     import { userData } from './store.ts';
     import { message } from './store.ts';
-    import jwtDecode from 'jwt-decode';
+    import { jwtDecode} from 'jwt-decode';
     import { API_BASE_URL } from '../../config.js';
 
     let isLoading = false; // Local state for loading indicator
 
     // Function for handling user sign-in with Google Identity Services
     async function userSignIn(response) {
-        isLoading = true; // Set loading to true when the request starts
+        isLoading = true;
         // response.credential contains the token provided by Google
         const token = response.credential;
         const decoded = jwtDecode(token); // Decode JWT
@@ -60,3 +60,6 @@
         <p>Loading...</p>
     {/if}
 </section>
+
+
+5:     import jwtDecode from 'jwt-decode';
