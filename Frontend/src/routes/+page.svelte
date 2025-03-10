@@ -18,7 +18,7 @@
                 navigate('/Scrape'); // Navigate to Scrape page if verification and message are true
             }
         } else {
-            console.log('Verification failed'); // Log verification failure
+            console.log('Verification failed');
         }
     }
 </script>

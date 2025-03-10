@@ -1,12 +1,15 @@
 <script>
     import { onMount } from 'svelte'; // Import onMount for lifecycle hook
-    import {userData} from './store.ts';
-    import {message} from './store.ts';
-    import {jwtDecode} from 'jwt-decode';
+    import { userData } from './store.ts';
+    import { message } from './store.ts';
+    import jwtDecode from 'jwt-decode';
     import { API_BASE_URL } from '../../config.js';
+
+    let isLoading = false; // Local state for loading indicator
 
     // Function for handling user sign-in with Google Identity Services
     async function userSignIn(response) {
+        isLoading = true; // Set loading to true when the request starts
         // response.credential contains the token provided by Google
         const token = response.credential;
         const decoded = jwtDecode(token); // Decode JWT
@@ -22,19 +25,23 @@
         .then(data => {
             console.log(data.message);
             alert(JSON.stringify(data.message));
-            userData.set({name: decoded.name});
+            userData.set({ name: decoded.name });
             message.set(true);
         })
         .catch(error => {
             console.log(error);
+        })
+        .finally(() => {
+            isLoading = false;
         });
     }
+
     onMount(() => {
-    window.userSignIn = userSignIn;
+        window.userSignIn = userSignIn;
     });
 </script>
 
-<section class= "mb-4">
+<section class="mb-4">
     <!-- Include Google Identity Services API (User Login) -->
     <script src="https://accounts.google.com/gsi/client" async defer></script>
     <script src='https://www.googleapis.com/auth/userinfo.profile'></script>
@@ -47,5 +54,9 @@
 
     <!-- Google Sign-In button -->
     <div class="g_id_signin" data-type="standard"></div>
-</section>
 
+    <!-- Loading indicator -->
+    {#if isLoading}
+        <p>Loading...</p>
+    {/if}
+</section>
